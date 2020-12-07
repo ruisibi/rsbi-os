@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruisitech.bi.mapper.frame.RoleMapper">
+
+	<resultMap id="BaseResultMap" type="com.ruisitech.bi.entity.frame.Role">
+		<id column="role_Id" property="roleId"/>
+		<result column="role_name" property="roleName"/>
+		<result column="role_desc" property="roleDesc"/>
+		<result column="create_date" property="createDate"/>
+		<result column="create_user" property="createUser"/>
+		<result column="user_id" property="userId"/>
+		<result column="ord" property="ord"/>
+    </resultMap>
+    
+    <select id="listUserRole" resultMap="BaseResultMap">
+    	select a.role_Id, a.role_name, a.role_desc, a.create_date, a.create_user, a.ord, b.user_id
+    	from sc_role a left join (select role_id, user_id from role_user_rela where user_id = #{userId}) b on a.role_id = b.role_id
+    	order by ord
+    </select>
+    
+    <select id="list" resultMap="BaseResultMap">
+    	select role_Id, role_name, role_desc, create_date, create_user, ord
+    	from sc_role
+    	where 1=1
+    	<if test="keyword != null and keyword.length > 0">
+    		and (role_name like '%${keyword}%' or role_desc like '%${keyword}%')
+    	</if>
+    	order by ord
+    </select>
+    
+    <select id="getById" resultMap="BaseResultMap">
+    	select role_Id, role_name, role_desc, create_date, create_user, ord
+    	from sc_role
+    	where role_id = #{roleId}
+    </select>
+    
+    <select id="listRoleMenus" resultType="java.util.HashMap">
+		select a.menu_id "id",
+       a.menu_pid "pid",
+       menu_name "text",
+       b.menu_id "id2"
+	   from (select distinct (m.menu_id) menu_id,
+	                        m.menu_name menu_name,
+	                        menu_order,
+	                        m.menu_pid menu_pid
+	          from sc_menu m) a
+	    left join (select menu_id from role_menu_rela where role_id = #{roleId}) b
+	    on a.menu_id = b.menu_id
+	    order by a.menu_order, a.menu_id
+	</select>
+	
+	<select id="roledata" resultType="java.util.HashMap">
+		select aa.id "id", aa.name "name", aa.name as "text", aa.pid as "pid", aa.tp as "tp", aa.ord as ord, icon as "icon", b.data_id "seldata" from (
+		select ds_id id, name, pid, 'fl' as tp, ord, 'fa fa-cubes' as icon from olap_subject_type
+		union all
+		select tid+100000 as id, tdesc as name, type_id as pid, 'data' as tp, tid as ord, 'fa fa-cube' as icon from olap_table_meta 
+		)  aa left join (select * from role_data_rela where role_id = #{roleId}) b on aa.id - 100000 = b.data_id
+		order by "tp", ord
+	</select>
+
+</mapper>
