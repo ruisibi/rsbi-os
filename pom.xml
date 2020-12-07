@@ -115,6 +115,11 @@
             <version>42.2.5</version>
         </dependency>
         <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.28.0</version>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <version>2.2</version>
@@ -161,6 +166,7 @@
                     <include>**/*.yml</include>
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
+                    <include>**/*.sqlite3</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
