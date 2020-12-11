@@ -6,7 +6,7 @@ public class PageParam {
 	 * 分页参数
 	 */
 	private Integer total;
-	private Integer page;
+	private Integer page;  //页数， 从1开始
 	private Integer rows;
 
 	//搜索
@@ -23,12 +23,18 @@ public class PageParam {
 	}
 	
 	public Integer getPage() {
+		if(page == null){
+			page = 1;
+		}
 		return page;
 	}
 	public void setPage(Integer page) {
 		this.page = page;
 	}
 	public Integer getRows() {
+		if(rows == null){
+			rows = 10;
+		}
 		return rows;
 	}
 	public void setRows(Integer rows) {

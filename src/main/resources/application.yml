@@ -1,18 +1,25 @@
 #数据库连接 mysql
-#spring:
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/rs_report?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=GMT%2B8
-#    username: root
-#    password: 12345678
-#    driver-class-name: com.mysql.cj.jdbc.Driver
 spring:
   datasource:
-    url: jdbc:sqlite::resource:rsreport.sqlite3
-    username:
-    password:
-    driver-class-name: org.sqlite.JDBC
+    url: jdbc:mysql://localhost:3306/rs_report?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=GMT%2B8
+    username: root
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#spring:
+#  datasource:
+#    url: jdbc:sqlite::resource:rsreport.sqlite3
+#    username:
+#    password:
+#    driver-class-name: org.sqlite.JDBC
 mybatis:
   #mapper配置文件
   mapper-locations: classpath:mybatis/*.xml
 #logging:
 #  config: classpath:log4j.properties
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: false  #开启优化，如果开启优化，在分页页码结果没有数据的时候,会显示有数据的页码数据
+  supportMethodsArguments: true #是否支持接口参数来传递分页参数，默认false
+  pageSizeZero: true #pageSize=0 返回所有
+  params: count=countSql
