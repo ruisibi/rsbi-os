@@ -93,7 +93,7 @@
 	
 	<select id="listCubeMeta" resultType="java.util.HashMap" parameterType="java.lang.Integer">
 		select  a.rid as "id", a.cube_id as "cubeId", c.dset as "dsetId", f.ds_id as "dsid", a.tname "tname", a.col_type as "col_type", a.col_id as "col_id", a.col_name as "col_name", b.dim_desc as "dim_name", 
-		b.dim_desc "text", 'open' as "state", 'icon-dim' as "iconCls", alias "alias", '' as "fmt", '' as "aggre", dim_type as "dim_type", 
+		b.dim_desc "text",alias "alias", '' as "fmt", '' as "aggre", dim_type as "dim_type",
 		cas_parent as "iscas", b.col_table_name as "tableName", b.col_key as "tableColKey", b.col_name as "tableColName", a.ord as "ord", b.ordcol as "ordcol", 1 as "ord2", 
 		 dim_ord "dimord", 1 as "rate", '' as "unit", b.group_type as "grouptype",  d.group_name as "groupname", 0 as "calc_kpi",  a.calc as "calc", 
 		 b.key_val_type "valType", b.dateformat as "dateformat"
@@ -103,7 +103,7 @@
 		left join olap_dim_group d on b.group_type = d.group_id
 		where a.cube_Id = #{cubeId} and a.col_type = 1 
 		 UNION all 
-		 select a.rid id, a.cube_id, d.dset, f.ds_id as "dsid", a.tname,a.col_type, a.col_id, a.col_name, '' as dim_name, c.kpi_name text, 'open' as state, 'icon-kpi' as iconCls, alias, 
+		 select a.rid id, a.cube_id, d.dset, f.ds_id as "dsid", a.tname,a.col_type, a.col_id, a.col_name, '' as dim_name, c.kpi_name text, alias,
 		 fmt, aggre, '' as dim_type,  '' as iscas, '' as tableName, '' as tableColKey, '' as tableColName, ord, '' as ordcol, 2 as ord2, '' as dimord, rate, unit, 
 		 '' as grouptype, '' as groupname, calc_kpi,  a.calc,'' as valType, '' as dateformat
 		from olap_cube_col_meta a, olap_kpi_list c, olap_cube_meta d,   etl_dataset f
@@ -113,7 +113,7 @@
 	</select>
 	
 	<select id="listDs" resultType="java.util.HashMap" parameterType="java.lang.String">
-         select a.cube_id "cubeId", 'noname' as "tname", a.cube_name "text", 'open' as "state", 'icon-cube' as "iconCls"
+         select a.cube_id "cubeId", 'noname' as "tname", a.cube_name "text"
 		from olap_cube_meta a
          where cube_id in (${selectDsIds}) order by cube_id
 	</select>

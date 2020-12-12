@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/model")
@@ -70,6 +71,10 @@ public class CubeController extends BaseController {
 	@RequestMapping(value="/treeCube.action")
 	public @ResponseBody
     Object tree(Integer cubeId){
-		return super.buildSucces(service.treeCube(cubeId));
+		List<Map<String, Object>> ret = service.treeCube(cubeId);
+		if(ret.size() == 0){
+			return super.buildError("无数据");
+		}
+		return ret;
 	}
 }

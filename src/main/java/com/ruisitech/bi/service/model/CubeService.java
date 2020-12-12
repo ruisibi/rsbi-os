@@ -283,28 +283,32 @@ public class CubeService {
 		}
 	}
 	
-	public Object treeCube(Integer cubeId){
+	public List<Map<String, Object>> treeCube(Integer cubeId){
 		Map<String, Object> curGroup = null; //当前分组对象.
+		//默认所有节点都打开
+		Map<String, Object> state = new HashMap<String, Object>();
+		state.put("opened", true);
 		List<Map<String, Object>> ls = mapper.listDs(String.valueOf(cubeId));
 		for(int i=0; i<ls.size(); i++){
-			Map<String, Object> m = (Map<String, Object>)ls.get(i);
-			m.put("iconCls", "icon-cube");
+			Map<String, Object> m = ls.get(i);
+			m.put("icon", "fa fa-cubes");
+			m.put("state", state);
 			//给数据集节点添加维度、指标节点
 			List<Map<String, Object>> cubeChild = new ArrayList<Map<String, Object>>();
 			m.put("children", cubeChild);
 			Map<String, Object> wdnode = new HashMap<String, Object>();
 			wdnode.put("id", "wd");
 			wdnode.put("text", "维度");
-			wdnode.put("state", "open");
-			wdnode.put("iconCls", "icon-dim2");
+			wdnode.put("state", state);
+			wdnode.put("icon", "fa fa-gears");
 			List<Map<String, Object>> wdnodeChild = new ArrayList<Map<String, Object>>();
 			wdnode.put("children", wdnodeChild);
 			cubeChild.add(wdnode);
 			Map<String, Object> zbnode = new HashMap<String, Object>();
 			zbnode.put("id", "zb");
 			zbnode.put("text", "度量");
-			zbnode.put("state", "open");
-			zbnode.put("iconCls", "icon-kpigroup");
+			zbnode.put("state", state);
+			zbnode.put("icon", "glyphicon glyphicon-signal");
 			List<Map<String, Object>> zbnodeChild = new ArrayList<Map<String, Object>>();
 			zbnode.put("children", zbnodeChild);
 			cubeChild.add(zbnode);
@@ -326,12 +330,12 @@ public class CubeService {
 						Map<String, Object> fz = new HashMap<String, Object>();
 						fz.put("id", grouptype);
 						fz.put("text", groupname);
-						fz.put("state", "open");
-						fz.put("iconCls", "icon-dim");
+						fz.put("state", state);
+						fz.put("icon", " glyphicon glyphicon-stop icon_dim");
 						fz.put("children", new ArrayList());
 						//给分组添加attributes (把分组的第一个节点信息传递给他,拖拽分组时就当拖拽第一个节点)
 						Map<String, Object> attr = new HashMap<String, Object>();
-						fz.put("attributes", attr);
+						fz.put("li_attr", attr);
 						attr.put("col_type", col_type);
 						attr.put("col_id", child.get("col_id"));
 						attr.put("col_name", child.get("col_name"));
@@ -362,7 +366,7 @@ public class CubeService {
 					curGroup = null;
 				}
 				Map<String, Object> attr = new HashMap<String, Object>();
-				child.put("attributes", attr);
+				child.put("li_attr", attr);
 				//添加立方体所使用的数据源到Tree
 				attr.put("col_type", col_type);
 				attr.put("col_id", child.get("col_id"));
@@ -395,12 +399,12 @@ public class CubeService {
 				//设置节点图标
 				if(col_type == 1){
 					if(grouptype == null || grouptype.length() == 0){
-						child.put("iconCls", "icon-dim");
+						child.put("icon", "glyphicon glyphicon-stop icon_dim");
 					}else{
-						child.put("iconCls", "icon-dimlevel");
+						child.put("icon", "fa fa-th-large icon_dim");
 					}
 				}else{
-					child.put("iconCls", "icon-kpi");
+					child.put("icon", "glyphicon glyphicon-stop icon_kpi");
 				}
 				if(col_type == 1){
 					if(curGroup == null){
