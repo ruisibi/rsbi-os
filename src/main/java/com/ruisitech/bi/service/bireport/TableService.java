@@ -177,9 +177,7 @@ public class TableService extends BaseCompService {
 	
 	/**
 	 * 生成表格SQL
-	 * @param sqlVO
-	 * @param tinfo
-	 * @param params
+	 * @param table
 	 * @param release  判断当前是否为发布状态, 0 表示不是发布，1表示发布到多维分析，2表示发布到仪表盘
 	 * @return
 	 * @throws ParseException
@@ -271,17 +269,17 @@ public class TableService extends BaseCompService {
 					}
 					sql.append(" and " + dim.getColname() + " between '"+start+"' and '" + end + "'");
 				}else
-				if(dim.getVals() != null && dim.getVals().length() > 0){
-					String ret = dim.getVals();
+				if(dim.getVals() != null && dim.getVals().size() > 0){
+					String ret = RSBIUtils.dealIntegerParam(dim.getVals());
 					if(jstype != 0){
 						ret = resetVals(ret, dim.getType(), dim.getDateformat(), jstype);
 						GridFilterContext filter = new GridFilterContext();
 						filter.setColumn(dim.getAlias());
 						filter.setFilterType(GridFilter.in);
-						filter.setValue(dim.getVals());
+						filter.setValue(ret);
 						this.filters.add(filter);
 					}
-					ret = RSBIUtils.dealStringParam(ret);
+					ret = RSBIUtils.dealStringParam(dim.getVals());
 					sql.append(" and " + dim.getColname()+ " in ("+ret+")");
 				}
 			}
@@ -305,37 +303,37 @@ public class TableService extends BaseCompService {
 					}
 					sql.append(" and " + dim.getColname()+ " between '"+start+"' and '" + end + "'");
 				}else
-				if(dim.getVals() != null && dim.getVals().length() > 0){
+				if(dim.getVals() != null && dim.getVals().size() > 0){
 					//如果有计算指标，需要重写数据值列表
-					String ret = dim.getVals();
+					String ret = RSBIUtils.dealIntegerParam(dim.getVals());
 					if(jstype != 0){
 						ret = resetVals(ret, dim.getType(), dim.getDateformat(), jstype);
 						GridFilterContext filter = new GridFilterContext();
 						filter.setColumn(dim.getAlias());
 						filter.setFilterType(GridFilter.in);
-						filter.setValue(dim.getVals());
+						filter.setValue(ret);
 						this.filters.add(filter);
 					}
-					ret = RSBIUtils.dealStringParam(ret);
+					ret = RSBIUtils.dealStringParam(dim.getVals());
 					sql.append(" and " + dim.getColname() + " in ("+ret+")");
 				}
 			} else {
 				//限制维度筛选
-				if(dim.getVals() != null && dim.getVals().length() > 0){
+				if(dim.getVals() != null && dim.getVals().size() > 0){
 					String vls = null;
 					if( jstype != 0){  //有计算指标，需要从写时间值
-						vls = resetVals(dim.getVals(), dim.getType(), dim.getDateformat(), jstype);
+						vls = resetVals(RSBIUtils.dealIntegerParam(dim.getVals()), dim.getType(), dim.getDateformat(), jstype);
 						GridFilterContext filter = new GridFilterContext();
 						filter.setColumn(dim.getAlias());
 						filter.setFilterType(GridFilter.in);
-						filter.setValue(dim.getVals());
+						filter.setValue(RSBIUtils.dealIntegerParam(dim.getVals()));
 						this.filters.add(filter);
 					}else{
-						vls = dim.getVals();
+						vls = RSBIUtils.dealIntegerParam(dim.getVals());
 					}
 					//处理字符串
 					if("string".equalsIgnoreCase(dim.getValType())){
-						vls = RSBIUtils.dealStringParam(vls);
+						vls = RSBIUtils.dealStringParam(dim.getVals());
 					}
 					sql.append(" and " + (dim.getCalc() == 1 ? dim.getColname(): tableAlias.get(dim.getTname()) + "." + dim.getColname()) + " in ("+vls+")");
 				}
@@ -389,14 +387,14 @@ public class TableService extends BaseCompService {
 					this.filters.add(filter);
 				}
 			}else{
-				if(release == 0 && param.getVals() != null && param.getVals().length() > 0){
+				if(release == 0 && param.getVals() != null && param.getVals().size() > 0){
 					//字符串特殊处理
-					String  vls = param.getVals();
+					String  vls = RSBIUtils.dealIntegerParam(param.getVals());
 					if(jstype != 0 && ("year".equals(tp) || "quarter".equals(tp))){
 						vls = resetVals(vls, tp, param.getDateformat(), jstype);
 					}
 					if("string".equalsIgnoreCase(valType)){
-						vls = RSBIUtils.dealStringParam(vls);
+						vls = RSBIUtils.dealStringParam(param.getVals());
 					}
 					sql.append(" and " + (param.getCalc() == 0 ?(tableAlias.get(tname) + "."):"") +colname + " in ("+vls+")");
 				}else if(release == 1 || release == 2){
@@ -407,8 +405,8 @@ public class TableService extends BaseCompService {
 					GridFilterContext filter = new GridFilterContext();
 					filter.setColumn(param.getAlias());
 					filter.setFilterType(GridFilter.in);
-					if(release == 0 && param.getVals() != null && param.getVals().length() > 0){
-						filter.setValue(param.getVals());
+					if(release == 0 && param.getVals() != null && param.getVals().size() > 0){
+						filter.setValue(RSBIUtils.dealIntegerParam(param.getVals()));
 					}else if(release == 1 || release == 2){
 						filter.setValue("${"+colname+"}");
 					}
@@ -813,7 +811,7 @@ public class TableService extends BaseCompService {
 					cf.setDateType("day");
 					cf.setDateTypeFmt(obj.getDateformat());
 					cf.setUselink(uselink);
-					cf.setValue(obj.getVals());
+					cf.setValue(RSBIUtils.dealIntegerParam(obj.getVals()));
 					cf.setMulti(true);
 					cf.setShowWeek(false);
 					cf.setDesc(obj.getDimdesc());
@@ -864,7 +862,7 @@ public class TableService extends BaseCompService {
 						cf.setDateType("day");
 						cf.setDateTypeFmt(obj.getDateformat());
 						cf.setUselink(uselink);
-						cf.setValue(obj.getVals());
+						cf.setValue(RSBIUtils.dealIntegerParam(obj.getVals()));
 						cf.setMulti(true);
 						cf.setShowWeek(false);
 						cf.setDesc(obj.getDimdesc());
@@ -917,7 +915,7 @@ public class TableService extends BaseCompService {
 					cf.setDateType("month");
 					cf.setDateTypeFmt(obj.getDateformat());
 					cf.setUselink(uselink);
-					cf.setValue(obj.getVals());
+					cf.setValue(RSBIUtils.dealIntegerParam(obj.getVals()));
 					cf.setMulti(true);
 					cf.setDesc(obj.getDimdesc());
 					String alias = obj.getAlias();
@@ -967,7 +965,7 @@ public class TableService extends BaseCompService {
 						cf.setDateType("month");
 						cf.setDateTypeFmt(obj.getDateformat());
 						cf.setUselink(uselink);
-						cf.setValue(obj.getVals());
+						cf.setValue(RSBIUtils.dealIntegerParam(obj.getVals()));
 						cf.setMulti(true);
 						cf.setDesc(obj.getDimdesc());
 						String alias = obj.getAlias();
@@ -1016,7 +1014,7 @@ public class TableService extends BaseCompService {
 					cf.setTop(obj.getTop());
 					cf.setTopType(obj.getTopType());
 					cf.setUselink(uselink);
-					cf.setValue(obj.getVals());
+					cf.setValue(RSBIUtils.dealIntegerParam(obj.getVals()));
 					cf.setMulti(true);
 					cf.setSubs(new ArrayList<CrossField>());
 					tmp.add(cf);
@@ -1104,7 +1102,7 @@ public class TableService extends BaseCompService {
 						cf.setTop(obj.getTop());
 						cf.setTopType(obj.getTopType());
 						cf.setUselink(uselink);
-						cf.setValue(obj.getVals());
+						cf.setValue(RSBIUtils.dealIntegerParam(obj.getVals()));
 						cf.setMulti(true);
 						cf.setSubs(new ArrayList<CrossField>());
 						cf.setParent(tp);

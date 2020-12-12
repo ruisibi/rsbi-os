@@ -96,7 +96,7 @@ public class ReportService extends BaseCompService {
 					String name = param.getName();
 					String type = param.getType();
 					String colname = param.getColname();
-					String values = param.getVals();
+					List<String> values = param.getVals();
 					
 					InputField input = null;
 					InputField input2 = null;
@@ -106,7 +106,7 @@ public class ReportService extends BaseCompService {
 						String template = TemplateManager.getInstance().createTemplate(sql);
 						target.setTemplateName(template);
 						input = target;
-						input.setDefaultValue(values == null ? "" : values);
+						input.setDefaultValue(values == null ? "" : values.get(0));
 						input.setDesc(name);
 						input.setId(colname);
 					}else if("day".equalsIgnoreCase(type)){
@@ -189,9 +189,6 @@ public class ReportService extends BaseCompService {
 	/**
 	 * 
 	 * @param mv
-	 * @param tableJson
-	 * @param kpiJson
-	 * @param params
 	 * @param release  判断当前是否为发布状态, 0 表示不是发布，1表示发布到多维分析，2表示发布到仪表盘
 	 * @return
 	 * @throws IOException

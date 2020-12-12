@@ -245,8 +245,8 @@ public class ChartService extends BaseCompService {
 	 * 其中第二个参数只用在图形中，当用户没选X轴时(xcol)时，用这个做默认xcol
 	 * 其中第三个参数只用在图形中，当用户没选图例(scol)时，用这个做默认图例
 	 * release 表示当前为发布状态, 0 表示不是发布，1表示发布到多维分析，2表示发布到仪表盘
-	 * @param sqlVO
-	 * @param ser
+	 * @param chart
+	 * @param release
 	 * @return
 	 * @throws ParseException
 	 */
@@ -358,7 +358,7 @@ public class ChartService extends BaseCompService {
 				if(dim.getDay() != null){
 					sql.append(" and " + dim.getColname() + " between '"+dim.getDay().getStartDay()+"' and '" + dim.getDay().getEndDay()+"'");
 				}else
-				if(dim.getVals() != null && dim.getVals().length() > 0){
+				if(dim.getVals() != null && dim.getVals().size() > 0){
 					String vls = RSBIUtils.dealStringParam(dim.getVals());
 					sql.append(" and " + dim.getColname() + " in ("+vls+")");
 				}
@@ -367,15 +367,15 @@ public class ChartService extends BaseCompService {
 				if(dim.getMonth() != null){
 					sql.append(" and " + dim.getColname() + " between '"+dim.getMonth().getStartMonth()+"' and '" + dim.getMonth().getEndMonth()+"'");
 				}else
-				if(dim.getVals() != null && dim.getVals().length() > 0){
+				if(dim.getVals() != null && dim.getVals().size() > 0){
 					String vls = RSBIUtils.dealStringParam(dim.getVals());
 					sql.append(" and " + dim.getColname() + " in ("+vls+")");
 					//isDealDate = true;
 				}
 			}else{
 				//限制维度筛选
-				if(dim.getVals() != null && dim.getVals().length() > 0){
-					String  vls = dim.getVals();
+				if(dim.getVals() != null && dim.getVals().size() > 0){
+					String  vls = RSBIUtils.dealIntegerParam(dim.getVals());
 					if("string".equalsIgnoreCase(dim.getValType())){
 						vls = RSBIUtils.dealStringParam(dim.getVals());
 					}
@@ -405,9 +405,9 @@ public class ChartService extends BaseCompService {
 					sql.append(" #if($"+alias+" != '') and " + tableAlias.get(tname) + "." +colname + " = $"+alias + " #end");   //仪表盘发布，日期,月份只有一个参数
 				}
 			}else{
-				if(release == 0 && param.getVals() != null && param.getVals().length() > 0){
+				if(release == 0 && param.getVals() != null && param.getVals().size() > 0){
 					//字符串特殊处理
-					String  vls = param.getVals();
+					String  vls = RSBIUtils.dealIntegerParam(param.getVals());
 					if("string".equalsIgnoreCase(param.getValType())){
 						vls = RSBIUtils.dealStringParam(param.getVals());
 					}
@@ -539,7 +539,7 @@ public class ChartService extends BaseCompService {
 	/**
 	 * 创建图形的dataCenter
 	 * @param sql
-	 * @param sqlVO
+	 * @param chartJson
 	 * @return
 	 * @throws IOException
 	 */

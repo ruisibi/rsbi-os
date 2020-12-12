@@ -2,6 +2,8 @@ package com.ruisitech.bi.entity.bireport;
 
 import com.ruisitech.bi.entity.common.BaseEntity;
 
+import java.util.List;
+
 public class ParamDto extends BaseEntity {
 
 	private String type;
@@ -12,8 +14,8 @@ public class ParamDto extends BaseEntity {
 	private String tname;
 	private String st;
 	private String end;
-	private String vals;
-	private String valStrs;
+	private List<String> vals;
+	private List<String> valStrs;
 	private String valDesc;
 	private Integer id;
 	private Integer cubeId;
@@ -76,12 +78,6 @@ public class ParamDto extends BaseEntity {
 	public void setEnd(String end) {
 		this.end = end;
 	}
-	public String getVals() {
-		return vals;
-	}
-	public void setVals(String vals) {
-		this.vals = vals;
-	}
 	public Integer getId() {
 		return id;
 	}
@@ -136,12 +132,6 @@ public class ParamDto extends BaseEntity {
 	public void setDsid(String dsid) {
 		this.dsid = dsid;
 	}
-	public String getValStrs() {
-		return valStrs;
-	}
-	public void setValStrs(String valStrs) {
-		this.valStrs = valStrs;
-	}
 	public String getGrouptype() {
 		return grouptype;
 	}
@@ -166,6 +156,23 @@ public class ParamDto extends BaseEntity {
 	public void setCalc(Integer calc) {
 		this.calc = calc;
 	}
+
+	public List<String> getVals() {
+		return vals;
+	}
+
+	public void setVals(List<String> vals) {
+		this.vals = vals;
+	}
+
+	public List<String> getValStrs() {
+		return valStrs;
+	}
+
+	public void setValStrs(List<String> valStrs) {
+		this.valStrs = valStrs;
+	}
+
 	@Override
 	public void validate() {
 		 

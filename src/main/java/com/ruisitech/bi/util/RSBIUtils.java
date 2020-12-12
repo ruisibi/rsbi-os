@@ -15,10 +15,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class RSBIUtils {
 	
@@ -78,13 +75,23 @@ public final class RSBIUtils {
 		return UUID.randomUUID().toString().replace("-","");
 	}
 	
-	public static String dealStringParam(String vals){
-		String[] vls = vals.split(",");
+	public static String dealStringParam(List<String> vals){
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<vls.length; i++){
-			String v = vls[i];
+		for(int i=0; i<vals.size(); i++){
+			String v = vals.get(i);
 			sb.append("'" + v + "'");
-			if(i != vls.length - 1){
+			if(i != vals.size() - 1){
+				sb.append(",");
+			}
+		}
+		return sb.toString();
+	}
+	public static String dealIntegerParam(List<String> vals){
+		StringBuffer sb = new StringBuffer();
+		for(int i=0; i<vals.size(); i++){
+			String v = vals.get(i);
+			sb.append(v);
+			if(i != vals.size() - 1){
 				sb.append(",");
 			}
 		}

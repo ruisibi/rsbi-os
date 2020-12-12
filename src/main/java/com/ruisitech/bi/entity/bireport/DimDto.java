@@ -2,14 +2,16 @@ package com.ruisitech.bi.entity.bireport;
 
 import com.ruisitech.bi.entity.common.BaseEntity;
 
+import java.util.List;
+
 public class DimDto extends BaseEntity {
 
 	private Integer id;
 	private String type;
 	private String colname; //码表在事实表中对应的字段名
 	private String alias; //别名
-	private String vals; //码表的限制维
-	private String valDesc; //码表限制维的名称
+	private List<String> vals; //码表的限制维
+	private List<String> valDesc; //码表限制维的名称
 	private String issum; //y,n两值
 	private String tname; //维度所在表name
 	private Integer calc;  //是否计算列
@@ -73,18 +75,23 @@ public class DimDto extends BaseEntity {
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
-	public String getVals() {
+
+	public List<String> getVals() {
 		return vals;
 	}
-	public void setVals(String vals) {
+
+	public void setVals(List<String> vals) {
 		this.vals = vals;
 	}
-	public String getValDesc() {
+
+	public List<String> getValDesc() {
 		return valDesc;
 	}
-	public void setValDesc(String valDesc) {
+
+	public void setValDesc(List<String> valDesc) {
 		this.valDesc = valDesc;
 	}
+
 	public String getIssum() {
 		return issum;
 	}

@@ -4,18 +4,20 @@ import com.ruisitech.bi.entity.bireport.ParamDto;
 import com.ruisitech.bi.entity.model.Dimension;
 import com.ruisitech.bi.service.bireport.OlapService;
 import com.ruisitech.bi.service.model.DimensionService;
+import com.ruisitech.bi.util.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/bireport")
-public class DimController {
+public class DimController extends BaseController {
 	
 	@Autowired
 	private OlapService service;
@@ -30,19 +32,17 @@ public class DimController {
 	}
 	
 	@RequestMapping(value="/paramFilter.action")
-	public String paramFilter(ParamDto param, ModelMap model) throws Exception{
-		
+	public @ResponseBody
+	Object paramFilter(ParamDto param) throws Exception{
 		Dimension d = dimService.getDimInfo(param.getId(), param.getCubeId());
 		List<Map<String, Object>> ls = service.paramFilter(d, null, param.getDsid());
-		model.addAttribute("datas", ls);
-		model.addAttribute("dimType", d.getType());
-		model.addAttribute("vals", param.getVals());
-		model.addAttribute("dimId", param.getId());
+		Map<String, Object> ret = new HashMap<>();
+		ret.put("datas", ls);
 		if(d.getType().equals("month") || d.getType().equals("day")){
-			model.addAttribute("st", param.getSt());
-			model.addAttribute("end", param.getEnd());
+			ret.put("st", param.getSt());
+			ret.put("end", param.getEnd());
 		}
-		return "bireport/DimFilter-pfilter";
+		return super.buildSucces(ret);
 	}
 	
 	@RequestMapping(value="/paramSearch.action")
