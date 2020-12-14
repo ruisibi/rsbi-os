@@ -28,11 +28,7 @@ public class TableController extends BaseController {
 	@RequestMapping(value="/TableView.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object tableView(@RequestBody TableQueryDto tableJson, HttpServletRequest req, HttpServletResponse res) throws Exception {
-		
-		//放入request,方便访问
-		req.setAttribute("table", tableJson);
-		req.setAttribute("compId", String.valueOf(tableJson.getCompId()));
-		
+
 		ExtContext.getInstance().removeMV(TableService.deftMvId);
 		MVContext mv = tableService.json2MV(tableJson);
 		

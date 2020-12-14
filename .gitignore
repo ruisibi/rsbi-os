@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 .mvn
+/src/main/webapp/WEB-INF/ext-temp/
