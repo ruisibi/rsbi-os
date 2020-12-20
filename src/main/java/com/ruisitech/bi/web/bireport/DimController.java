@@ -29,7 +29,7 @@ public class DimController extends BaseController {
 	@RequestMapping(value="/queryDims.action")
 	public @ResponseBody
     Object queryDims(Integer cubeId){
-		return service.listDims(cubeId);
+		return super.buildSucces(service.listDims(cubeId));
 	}
 	
 	@RequestMapping(value="/paramFilter.action")

@@ -2,6 +2,7 @@ package com.ruisitech.bi.service.bireport;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ruisi.ext.engine.util.P;
 import com.ruisi.ext.engine.view.context.ExtContext;
 import com.ruisi.ext.engine.view.context.MVContext;
 import com.ruisi.ext.engine.view.context.dsource.DataSourceContext;
@@ -17,6 +18,7 @@ import com.ruisitech.bi.entity.portal.PortalChartQuery;
 import com.ruisitech.bi.entity.portal.PortalParamDto;
 import com.ruisitech.bi.entity.portal.PortalTableQuery;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -45,11 +47,11 @@ public abstract class BaseCompService {
 		dsource.putProperty("id", ds.getDsid());
 		String use = dsource.getUse();
 		dsource.putProperty("usetype", use);
-		if(use == null || "jdbc".equalsIgnoreCase(use.toString())){
+		if(use == null || "jdbc".equalsIgnoreCase(use)){
 			String linktype = ds.getLinkType();
 			dsource.putProperty("linktype", linktype);
 			dsource.putProperty("linkname", ds.getLinkName());
-			dsource.putProperty("linkpwd", ds.getLinkPwd());
+			dsource.putProperty("linkpwd", P.encode(ds.getLinkPwd()));
 			dsource.putProperty("linkurl", ds.getLinkUrl());
 		}else{
 			dsource.putProperty("jndiname", ds.getJndiName());
@@ -98,7 +100,7 @@ public abstract class BaseCompService {
 		}
 	}
 	
-	public String resetVals(String inputval, String type, String dateFormat, int jstype){
+	public String resetVals(String inputval, String type, String dateFormat, int jstype) throws ParseException {
 		if(jstype == 0){
 			return inputval;
 		}
@@ -140,7 +142,7 @@ public abstract class BaseCompService {
 	/**
 	 * 根据指标计算的值筛选，从新设置时间字段的数据区间，主要针对日、月份的数据区间控制
 	 */
-	public String[] resetBetween(String start, String end, String type, String dateFormat, int jstype){
+	public String[] resetBetween(String start, String end, String type, String dateFormat, int jstype) throws ParseException {
 		if(jstype == 0){ //无计算
 			return new String[]{start, end};
 		}
@@ -208,7 +210,7 @@ public abstract class BaseCompService {
 				target.setValue(defvalue);
 				target.setType("hidden");
 				mvParams.put(target.getId(), target);
-				ExtContext.getInstance().putServiceParam(mv.getMvid(), target.getId(), target);
+				mv.getMvParams().put(target.getId(), target);
 				
 				
 				mv.getChildren().add(target);
@@ -220,7 +222,7 @@ public abstract class BaseCompService {
 	/**
 	 * nodetype 表示筛选的类型，分为维度筛选和指标筛选两类，维度筛选和指标筛选对应的SQL位置不一样，维度放where 后， 指标放 having 后
 	 * @param params
-	 * @param nodetype
+	 * @param tableAlias
 	 * @return
 	 */
 	public String dealCubeParams(List<CompParamDto> params, Map<String, String> tableAlias){

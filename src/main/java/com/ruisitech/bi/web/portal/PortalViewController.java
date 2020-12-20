@@ -2,11 +2,11 @@ package com.ruisitech.bi.web.portal;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.bi.engine.view.emitter.ContextEmitter;
-import com.ruisi.bi.engine.view.emitter.excel.ExcelEmitter;
 import com.ruisi.ext.engine.ExtConstants;
 import com.ruisi.ext.engine.view.context.ExtContext;
 import com.ruisi.ext.engine.view.context.MVContext;
+import com.ruisi.ext.engine.view.emitter.ContextEmitter;
+import com.ruisi.ext.engine.view.emitter.excel.ExcelEmitter;
 import com.ruisi.ext.engine.view.emitter.pdf.PdfEmitter;
 import com.ruisi.ext.engine.view.emitter.text.TextEmitter;
 import com.ruisi.ext.engine.view.emitter.word.WordEmitter;
@@ -65,7 +65,7 @@ public class PortalViewController {
 		MVContext mv = ExtContext.getInstance().getMVContext(mvId);
 		
 		CompPreviewService ser = new CompPreviewService(req, res, req.getServletContext());
-		ser.setParams(ExtContext.getInstance().getParams(mvId));
+		ser.setParams(mv.getMvParams());
 		ser.initPreview();
 		
 		String fileName = "file.";
@@ -132,7 +132,7 @@ public class PortalViewController {
 		MVContext mv = ExtContext.getInstance().getMVContext(mvId);
 		
 		CompPreviewService ser =  new CompPreviewService(req, res, req.getServletContext());
-		ser.setParams(ExtContext.getInstance().getParams(mvId));
+		ser.setParams(mv.getMvParams());
 		ser.initPreview();
 		String ret = ser.buildMV(mv, req.getServletContext());
 		req.setAttribute("str", ret);

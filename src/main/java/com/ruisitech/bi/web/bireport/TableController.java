@@ -36,6 +36,6 @@ public class TableController extends BaseController {
 		ser.setParams(tableService.getMvParams());
 		ser.initPreview();
 		String ret = ser.buildMV(mv, req.getServletContext());
-		return ret;
+		return super.buildSucces(ret);
 	}
 }

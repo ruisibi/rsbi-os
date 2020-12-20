@@ -1,6 +1,6 @@
 package com.ruisitech.ext.service;
 
-import com.ruisi.bi.engine.cross.CrossFieldLoader;
+import com.ruisi.ext.engine.cross.CrossFieldLoader;
 import com.ruisi.ext.engine.view.context.cross.CrossField;
 import com.ruisi.ext.engine.wrapper.ExtRequest;
 

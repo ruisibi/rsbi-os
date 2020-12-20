@@ -76,6 +76,9 @@ public final class RSBIUtils {
 	}
 	
 	public static String dealStringParam(List<String> vals){
+		if(vals == null){
+			return null;
+		}
 		StringBuffer sb = new StringBuffer();
 		for(int i=0; i<vals.size(); i++){
 			String v = vals.get(i);
@@ -87,6 +90,9 @@ public final class RSBIUtils {
 		return sb.toString();
 	}
 	public static String dealIntegerParam(List<String> vals){
+		if(vals == null){
+			return null;
+		}
 		StringBuffer sb = new StringBuffer();
 		for(int i=0; i<vals.size(); i++){
 			String v = vals.get(i);

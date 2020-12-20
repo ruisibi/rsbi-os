@@ -1,13 +1,11 @@
 package com.ruisitech.bi.util;
 
-import com.ruisi.bi.engine.cross.CrossFieldLoader;
-import com.ruisi.bi.engine.view.emitter.ContextEmitter;
-import com.ruisi.bi.engine.view.emitter.html.HTMLEmitter;
 import com.ruisi.ext.engine.ConstantsEngine;
 import com.ruisi.ext.engine.ExtConfigConstants;
 import com.ruisi.ext.engine.ExtConstants;
 import com.ruisi.ext.engine.control.InputOption;
 import com.ruisi.ext.engine.control.InputOptionFactory;
+import com.ruisi.ext.engine.cross.CrossFieldLoader;
 import com.ruisi.ext.engine.dao.DaoHelper;
 import com.ruisi.ext.engine.init.ExtEnvirContext;
 import com.ruisi.ext.engine.init.ExtEnvirContextImpl;
@@ -20,6 +18,8 @@ import com.ruisi.ext.engine.view.context.Element;
 import com.ruisi.ext.engine.view.context.ExtContext;
 import com.ruisi.ext.engine.view.context.MVContext;
 import com.ruisi.ext.engine.view.context.form.InputField;
+import com.ruisi.ext.engine.view.emitter.ContextEmitter;
+import com.ruisi.ext.engine.view.emitter.json.JSON2Emitter;
 import com.ruisi.ext.engine.view.exception.ExtRuntimeException;
 import com.ruisi.ext.engine.wrapper.ExtRequest;
 import com.ruisi.ext.engine.wrapper.ExtRequestImpl;
@@ -115,7 +115,7 @@ public class CompPreviewService {
 	}
 	
 	public String buildMV(Element mv, ServletContext sctx) throws Exception{
-		ContextEmitter emitter = new HTMLEmitter();
+		ContextEmitter emitter = new JSON2Emitter();
 		return buildMV(mv, emitter, sctx);
 	}
 	

@@ -2,10 +2,10 @@ package com.ruisitech.bi.web.bireport;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.bi.engine.view.emitter.ContextEmitter;
-import com.ruisi.bi.engine.view.emitter.excel.ExcelEmitter;
 import com.ruisi.ext.engine.view.context.ExtContext;
 import com.ruisi.ext.engine.view.context.MVContext;
+import com.ruisi.ext.engine.view.emitter.ContextEmitter;
+import com.ruisi.ext.engine.view.emitter.excel.ExcelEmitter;
 import com.ruisi.ext.engine.view.emitter.pdf.PdfEmitter;
 import com.ruisi.ext.engine.view.emitter.text.TextEmitter;
 import com.ruisi.ext.engine.view.emitter.word.WordEmitter;
@@ -43,26 +43,7 @@ public class ReportDesignController extends BaseController {
 	@Autowired
 	private ReportService reportService;
 	
-	@RequestMapping(value="/ReportDesign.action")
-	public String index(Integer pageId, Integer selectDs, ModelMap model){
-		if(pageId != null){
-			OlapInfo olap = service.getOlap(pageId);
-			if(olap != null){
-				model.addAttribute("pageInfo", olap.getPageInfo());
-				model.addAttribute("pageName", olap.getPageName());
-			}
-		}else if(selectDs == null){
-			model.addAttribute("selectDs", cubeService.getMaxCubeId() - 1);
-		}
-		return "bireport/ReportDesign";
-	}
-	
-	@RequestMapping(value="/insertChart.action")
-	public String insertChart(String tp, ModelMap model){
-		model.addAttribute("tp", tp);
-		return "bireport/Panel-insertChart";
-	}
-	
+
 	@RequestMapping(value="/ReportExport.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object export(String type, String json, String picinfo, HttpServletRequest req, HttpServletResponse res) throws Exception{

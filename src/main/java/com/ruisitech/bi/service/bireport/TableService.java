@@ -87,10 +87,9 @@ public class TableService extends BaseCompService {
 		//设置ID
 		String id = ExtConstants.reportIdPrefix + IdCreater.create();
 		cr.setId(id);
-		cr.setOut("olap");
+		cr.setOut("olapJson");
 		cr.setShowData(true);
-		//cr.setExportName(title);
-	
+
 		mv.getChildren().add(cr);
 		cr.setParent(mv);
 		
@@ -527,6 +526,7 @@ public class TableService extends BaseCompService {
 	public GridDataCenterContext createDataCenter(String sql, TableQueryDto dto) throws IOException{
 		GridDataCenterContext ctx = new GridDataCenterContextImpl();
 		GridSetConfContext conf = new GridSetConfContext();
+		conf.setUseCache(false);
 		ctx.setConf(conf);
 		ctx.setId("DC-" + IdCreater.create());
 		String name = TemplateManager.getInstance().createTemplate(sql);
