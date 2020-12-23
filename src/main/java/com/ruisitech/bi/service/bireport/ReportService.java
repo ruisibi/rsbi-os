@@ -2,7 +2,7 @@ package com.ruisitech.bi.service.bireport;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.bi.engine.view.context.chart.ChartContext;
+import com.ruisi.ext.engine.view.context.chart.ChartContext;
 import com.ruisi.ext.engine.ExtConstants;
 import com.ruisi.ext.engine.init.TemplateManager;
 import com.ruisi.ext.engine.util.IdCreater;

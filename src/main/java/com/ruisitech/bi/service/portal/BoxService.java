@@ -10,7 +10,7 @@ import com.ruisi.ext.engine.view.context.MVContext;
 import com.ruisi.ext.engine.view.context.MVContextImpl;
 import com.ruisi.ext.engine.view.context.form.InputField;
 import com.ruisi.ext.engine.view.context.html.*;
-import com.ruisi.ext.engine.view.emitter.highcharts.util.ChartUtils;
+import com.ruisi.ext.engine.view.emitter.chart.ChartUtils;
 import com.ruisitech.bi.entity.bireport.KpiDto;
 import com.ruisitech.bi.entity.portal.BoxQuery;
 import com.ruisitech.bi.service.bireport.BaseCompService;

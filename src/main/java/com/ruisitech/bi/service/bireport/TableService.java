@@ -1152,9 +1152,9 @@ public class TableService extends BaseCompService {
 		String funcName = "warn"+ IdCreater.create();
 		scripts.append("function " +funcName+"(val, a, b, c, d){");
 		//先输出值
-		scripts.append("if(d == 'html'){out.print('<span class=\"kpiValue\">');}");
+		//scripts.append("if(d == 'json'){out.print('<span class=\"kpiValue\">');}");
 		scripts.append("if(val == null){out.print('-')}else{out.print(val, '"+kpiFmt+"');}");
-		scripts.append("if(d != 'html'){"); //只在html模式下起作用
+		scripts.append("if(d != 'json'){"); //只在html模式下起作用
 		scripts.append(" return;");
 		scripts.append("}");
 		scripts.append("if(val "+warn.get("logic1")+" "+warn.get("val1")+"){");
@@ -1164,7 +1164,7 @@ public class TableService extends BaseCompService {
 		scripts.append("}else{");
 		scripts.append("out.print(\"<span class='"+warn.get("pic3")+"'></span>\")");
 		scripts.append("}");
-		scripts.append("if(d == 'html'){out.print('</span>');}");
+		//scripts.append("if(d == 'html'){out.print('</span>');}");
 		scripts.append("}");
 		return funcName; 
 	}

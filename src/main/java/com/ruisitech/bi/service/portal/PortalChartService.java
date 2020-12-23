@@ -2,15 +2,15 @@ package com.ruisitech.bi.service.portal;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.bi.engine.view.context.chart.ChartContext;
-import com.ruisi.bi.engine.view.context.chart.ChartContextImpl;
-import com.ruisi.bi.engine.view.context.chart.ChartKeyContext;
-import com.ruisi.bi.engine.view.context.chart.ChartLinkContext;
 import com.ruisi.ext.engine.ExtConstants;
 import com.ruisi.ext.engine.util.IdCreater;
 import com.ruisi.ext.engine.view.context.Element;
 import com.ruisi.ext.engine.view.context.MVContext;
 import com.ruisi.ext.engine.view.context.MVContextImpl;
+import com.ruisi.ext.engine.view.context.chart.ChartContext;
+import com.ruisi.ext.engine.view.context.chart.ChartContextImpl;
+import com.ruisi.ext.engine.view.context.chart.ChartKeyContext;
+import com.ruisi.ext.engine.view.context.chart.ChartLinkContext;
 import com.ruisi.ext.engine.view.context.dc.grid.GridDataCenterContext;
 import com.ruisi.ext.engine.view.context.form.InputField;
 import com.ruisi.ext.engine.view.emitter.chart.AbstractChartEmitter;
@@ -355,8 +355,6 @@ public class PortalChartService extends BaseCompService {
 	 * 其中第二个参数只用在图形中，当用户没选X轴时(xcol)时，用这个做默认xcol
 	 * 其中第三个参数只用在图形中，当用户没选图例(scol)时，用这个做默认图例
 	 * release 表示当前为发布状态, 0 表示不是发布，1表示发布到多维分析，2表示发布到仪表盘
-	 * @param sqlVO
-	 * @param ser
 	 * @return
 	 * @throws ParseException
 	 */

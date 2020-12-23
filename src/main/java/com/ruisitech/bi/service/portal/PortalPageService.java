@@ -2,8 +2,8 @@ package com.ruisitech.bi.service.portal;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.bi.engine.view.context.chart.ChartContext;
-import com.ruisi.bi.engine.view.context.chart.ChartKeyContext;
+import com.ruisi.ext.engine.view.context.chart.ChartContext;
+import com.ruisi.ext.engine.view.context.chart.ChartKeyContext;
 import com.ruisi.ext.engine.ExtConstants;
 import com.ruisi.ext.engine.init.TemplateManager;
 import com.ruisi.ext.engine.util.IdCreater;
@@ -282,7 +282,7 @@ public class PortalPageService extends BaseCompService {
 	
 	/**
 	 * 生成动态参数
-	 * @param params
+	 * @param param
 	 * @param mv
 	 * @param isput 是否把参数放入MV对象，在发布的时候不用
 	 * @throws ExtConfigException
@@ -386,7 +386,7 @@ public class PortalPageService extends BaseCompService {
 			//把参数放入对象
 			if(isput){
 				this.mvParams.put(input.getId(), input);
-				ExtContext.getInstance().putServiceParam(mv.getMvid(), input.getId(), input);
+				mv.setMvParam(input.getId(), input);
 			}
 						
 			//处理样式
@@ -597,7 +597,7 @@ public class PortalPageService extends BaseCompService {
 				linkText.setParent(mv);
 				if(!release){
 					this.mvParams.put(linkText.getId(), linkText);
-					ExtContext.getInstance().putServiceParam(mv.getMvid(), linkText.getId(), linkText);
+					mv.setMvParam(linkText.getId(), linkText);
 					mv.setShowForm(true);
 				}
 			}
@@ -738,7 +738,7 @@ public class PortalPageService extends BaseCompService {
 				linkText.setParent(mv);
 				if(!release){
 					this.mvParams.put(linkText.getId(), linkText);
-					ExtContext.getInstance().putServiceParam(mv.getMvid(), linkText.getId(), linkText);
+					mv.setMvParam(linkText.getId(), linkText);
 					mv.setShowForm(true);
 				}
 			}
