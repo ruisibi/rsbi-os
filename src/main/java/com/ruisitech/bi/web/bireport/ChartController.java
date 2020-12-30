@@ -1,9 +1,11 @@
 package com.ruisitech.bi.web.bireport;
 
-import com.ruisi.ext.engine.view.context.ExtContext;
-import com.ruisi.ext.engine.view.context.MVContext;
+import com.alibaba.fastjson.JSONObject;
+import com.rsbi.ext.engine.view.context.ExtContext;
+import com.rsbi.ext.engine.view.context.MVContext;
 import com.ruisitech.bi.entity.bireport.ChartQueryDto;
 import com.ruisitech.bi.service.bireport.ChartService;
+import com.ruisitech.bi.util.BaseController;
 import com.ruisitech.bi.util.CompPreviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @Scope("prototype")
 @RequestMapping(value = "/bireport")
-public class ChartController {
+public class ChartController extends BaseController  {
 	
 	@Autowired
 	private ChartService chartService;
@@ -27,7 +29,6 @@ public class ChartController {
 	@RequestMapping(value="/ChartView.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object chartView(@RequestBody ChartQueryDto chartJson, HttpServletRequest req, HttpServletResponse res) throws Exception {
-		req.setAttribute("compId", String.valueOf(chartJson.getCompId()));
 		ExtContext.getInstance().removeMV(ChartService.deftMvId);
 		MVContext mv = chartService.json2MV(chartJson, false);
 		
@@ -35,6 +36,7 @@ public class ChartController {
 		//ser.setParams(tableService.getMvParams());
 		ser.initPreview();
 		String ret = ser.buildMV(mv, req.getServletContext());
-		return ret;
+		JSONObject obj = JSONObject.parseObject(ret);
+		return super.buildSucces(obj.toJSONString());
 	}
 }

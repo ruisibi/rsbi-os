@@ -5,8 +5,8 @@
  */
 package com.ruisitech.bi.util;
 
-import com.ruisi.ext.engine.dao.DatabaseHelper;
-import com.ruisi.ext.engine.view.context.grid.PageInfo;
+import com.rsbi.ext.engine.dao.DatabaseHelper;
+import com.rsbi.ext.engine.view.context.grid.PageInfo;
 
 /**
  * bi系统的 sqlite 实现

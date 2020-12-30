@@ -1,7 +1,7 @@
 package com.ruisitech.bi.web.portal;
 
-import com.ruisi.ext.engine.view.context.ExtContext;
-import com.ruisi.ext.engine.view.context.MVContext;
+import com.rsbi.ext.engine.view.context.ExtContext;
+import com.rsbi.ext.engine.view.context.MVContext;
 import com.ruisitech.bi.entity.portal.PortalTableQuery;
 import com.ruisitech.bi.service.portal.PortalTableService;
 import com.ruisitech.bi.util.CompPreviewService;

@@ -1,6 +1,6 @@
 package com.ruisitech.bi;
 
-import com.ruisi.ext.engine.control.ExtContextLoaderListener;
+import com.rsbi.ext.engine.control.ExtContextLoaderListener;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

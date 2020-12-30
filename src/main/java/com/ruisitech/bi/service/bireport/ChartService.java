@@ -2,22 +2,22 @@ package com.ruisitech.bi.service.bireport;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.ext.engine.view.context.chart.ChartContext;
-import com.ruisi.ext.engine.view.context.chart.ChartContextImpl;
-import com.ruisi.ext.engine.view.context.chart.ChartKeyContext;
-import com.ruisi.ext.engine.ExtConstants;
-import com.ruisi.ext.engine.init.TemplateManager;
-import com.ruisi.ext.engine.util.IdCreater;
-import com.ruisi.ext.engine.view.context.Element;
-import com.ruisi.ext.engine.view.context.MVContext;
-import com.ruisi.ext.engine.view.context.MVContextImpl;
-import com.ruisi.ext.engine.view.context.dc.grid.GridDataCenterContext;
-import com.ruisi.ext.engine.view.context.dc.grid.GridDataCenterContextImpl;
-import com.ruisi.ext.engine.view.context.dc.grid.GridFilterContext;
-import com.ruisi.ext.engine.view.context.dc.grid.GridSetConfContext;
-import com.ruisi.ext.engine.view.context.html.TextContext;
-import com.ruisi.ext.engine.view.context.html.TextContextImpl;
-import com.ruisi.ispire.dc.grid.GridFilter;
+import com.rsbi.ext.engine.view.context.chart.ChartContext;
+import com.rsbi.ext.engine.view.context.chart.ChartContextImpl;
+import com.rsbi.ext.engine.view.context.chart.ChartKeyContext;
+import com.rsbi.ext.engine.ExtConstants;
+import com.rsbi.ext.engine.init.TemplateManager;
+import com.rsbi.ext.engine.util.IdCreater;
+import com.rsbi.ext.engine.view.context.Element;
+import com.rsbi.ext.engine.view.context.MVContext;
+import com.rsbi.ext.engine.view.context.MVContextImpl;
+import com.rsbi.ext.engine.view.context.dc.grid.GridDataCenterContext;
+import com.rsbi.ext.engine.view.context.dc.grid.GridDataCenterContextImpl;
+import com.rsbi.ext.engine.view.context.dc.grid.GridFilterContext;
+import com.rsbi.ext.engine.view.context.dc.grid.GridSetConfContext;
+import com.rsbi.ext.engine.view.context.html.TextContext;
+import com.rsbi.ext.engine.view.context.html.TextContextImpl;
+import com.rsbi.ispire.dc.grid.GridFilter;
 import com.ruisitech.bi.entity.bireport.*;
 import com.ruisitech.bi.mapper.bireport.AreaMapper;
 import com.ruisitech.bi.util.RSBIUtils;
@@ -64,12 +64,6 @@ public class ChartService extends BaseCompService {
 		String formId = ExtConstants.formIdPrefix + IdCreater.create();
 		mv.setFormId(formId);
 		mv.setMvid(deftMvId);
-		
-	
-		if(!xlsdata){
-			//创建图形钻取项
-			this.createChartDrill(mv, chart);
-		}
 		
 		//创建chart
 		ChartContext cr = this.json2Chart(chart.getChartJson(), chart.getKpiJson(), false);
@@ -506,35 +500,6 @@ public class ChartService extends BaseCompService {
 		ret = ret.replaceAll("##", "\\$extUtils.printJH()").replaceAll("@", "'");
 		return ret;
 	}
-	
-	/**
-	 * 创建图形钻取菜单
-	 * @param mv
-	 */
-	public void createChartDrill(MVContext mv, ChartQueryDto chart){
-		StringBuffer txt = new StringBuffer();
-		txt.append("<div class=\"chartdrillmenu\">");
-		
-		int cnt = 0;
-		for(DimDto dim : chart.getChartJson().getParams()){
-			//if(dim.getDimpos().equals("param")){
-				if(cnt == 0){
-					txt.append("钻取维：");
-				}
-				txt.append("<span class=\"chartdrillDim\"><a href=\"javascript:;\" title=\"上卷\" onclick=\"chartGoupDim("+chart.getCompId()+", "+dim.getId()+",'"+dim.getPos()+"',true)\" style=\"opacity:0.5\"></a>"+dim.getDimdesc()+"("+dim.getValDesc()+")</span>");
-				cnt++;
-			//}
-		}
-		if(cnt == 0){
-			txt.append("<span class=\"charttip\">(点击图形节点进行钻取分析)</span>");
-		}
-		txt.append("</div>");
-		
-		TextContext text = new TextContextImpl();
-		text.setText(txt.toString());
-		text.setParent(mv);
-		mv.getChildren().add(text);
-	}
 
 	/**
 	 * 创建图形的dataCenter
@@ -547,6 +512,7 @@ public class ChartService extends BaseCompService {
 		List<DimDto> dims = chartJson.getDims();
 		GridDataCenterContext ctx = new GridDataCenterContextImpl();
 		GridSetConfContext conf = new GridSetConfContext();
+		conf.setUseCache(false);
 		ctx.setConf(conf);
 		ctx.setId("DC-" + IdCreater.create());
 		String name = TemplateManager.getInstance().createTemplate(sql);

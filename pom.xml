@@ -60,12 +60,12 @@
         </dependency>
         <!-- 本地jar -->
         <dependency>
-            <groupId>com.ruisi.ext</groupId>
+            <groupId>com.rsbi.ext</groupId>
             <artifactId>ext3</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
             <type>jar</type>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/ext3-1.4.jar</systemPath>
+            <systemPath>${project.basedir}/libs/ext3-1.5.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

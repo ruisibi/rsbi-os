@@ -1,6 +1,6 @@
 package com.ruisitech.ext.service;
 
-import com.ruisi.ext.engine.init.ExtXMLLoader;
+import com.rsbi.ext.engine.init.ExtXMLLoader;
 
 import javax.servlet.ServletContext;
 import java.io.InputStream;

@@ -5,7 +5,7 @@
  */
 package com.ruisitech.bi.service.frame;
 
-import com.ruisi.ext.engine.dao.DaoHelper;
+import com.rsbi.ext.engine.dao.DaoHelper;
 import com.ruisitech.bi.entity.frame.Role;
 import com.ruisitech.bi.mapper.frame.RoleMapper;
 import com.ruisitech.bi.util.RSBIUtils;

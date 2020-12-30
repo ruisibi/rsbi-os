@@ -2,7 +2,7 @@ package com.ruisitech.bi.web.app;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.ext.engine.view.context.MVContext;
+import com.rsbi.ext.engine.view.context.MVContext;
 import com.ruisitech.bi.service.portal.PortalPageService;
 import com.ruisitech.bi.service.portal.PortalService;
 import com.ruisitech.bi.util.CompPreviewService;

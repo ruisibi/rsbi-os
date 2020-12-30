@@ -1,6 +1,6 @@
 package com.ruisitech.bi.web.model;
 
-import com.ruisi.ext.engine.view.exception.ExtConfigException;
+import com.rsbi.ext.engine.view.exception.ExtConfigException;
 import com.ruisitech.bi.entity.model.DataSource;
 import com.ruisitech.bi.service.model.DataSourceService;
 import com.ruisitech.bi.util.BaseController;

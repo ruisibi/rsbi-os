@@ -1,8 +1,8 @@
 package com.ruisitech.bi.entity.model;
 
-import com.ruisi.ext.engine.dao.DatabaseHelper;
-import com.ruisi.ext.engine.view.context.ExtContext;
-import com.ruisi.ext.engine.view.exception.ExtConfigException;
+import com.rsbi.ext.engine.dao.DatabaseHelper;
+import com.rsbi.ext.engine.view.context.ExtContext;
+import com.rsbi.ext.engine.view.exception.ExtConfigException;
 import com.ruisitech.bi.entity.common.BaseEntity;
 import com.ruisitech.bi.util.RSBIUtils;
 

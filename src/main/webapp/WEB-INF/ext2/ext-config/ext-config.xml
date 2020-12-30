@@ -13,41 +13,41 @@
 	<constant name="xmlLoader" value="com.ruisitech.ext.service.LoadXmlFromDB"/>
 	<constant name="contextListener" value="com.ruisitech.bi.util.MVCleanListener"/>
 
-	<chart shape="line" class="com.ruisi.ext.engine.view.emitter.chart.echarts.LineChart"/>
-	<chart shape="area" class="com.ruisi.ext.engine.view.emitter.chart.echarts.AreaChart"/>
-	<chart shape="bar" class="com.ruisi.ext.engine.view.emitter.chart.echarts.BarChart"/>
-	<chart shape="bubble" class="com.ruisi.ext.engine.view.emitter.chart.echarts.BubbleChart"/>
-	<chart shape="column" class="com.ruisi.ext.engine.view.emitter.chart.echarts.ColumnChart"/>
-	<chart shape="gauge" class="com.ruisi.ext.engine.view.emitter.chart.echarts.GaugeChart"/>
-	<chart shape="gauge2" class="com.ruisi.ext.engine.view.emitter.chart.echarts.GaugeChart2"/>
-	<chart shape="mgauge" class="com.ruisi.ext.engine.view.emitter.chart.echarts.GaugeChart3"/>
-	<chart shape="map" class="com.ruisi.ext.engine.view.emitter.chart.echarts.MapChart"/>
-	<chart shape="nestingPie" class="com.ruisi.ext.engine.view.emitter.chart.echarts.NestingPieChart"/>
-	<chart shape="pie" class="com.ruisi.ext.engine.view.emitter.chart.echarts.PieChart"/>
-	<chart shape="pie2" class="com.ruisi.ext.engine.view.emitter.chart.echarts.PieChart2"/>
-	<chart shape="radar" class="com.ruisi.ext.engine.view.emitter.chart.echarts.RadarChart"/>
-	<chart shape="scatter" class="com.ruisi.ext.engine.view.emitter.chart.echarts.ScatterChart"/>
-	<chart shape="scatterMap" class="com.ruisi.ext.engine.view.emitter.chart.echarts.ScatterMapChart"/>
+	<chart shape="line" class="com.rsbi.ext.engine.view.emitter.chart.echarts.LineChart"/>
+	<chart shape="area" class="com.rsbi.ext.engine.view.emitter.chart.echarts.AreaChart"/>
+	<chart shape="bar" class="com.rsbi.ext.engine.view.emitter.chart.echarts.BarChart"/>
+	<chart shape="bubble" class="com.rsbi.ext.engine.view.emitter.chart.echarts.BubbleChart"/>
+	<chart shape="column" class="com.rsbi.ext.engine.view.emitter.chart.echarts.ColumnChart"/>
+	<chart shape="gauge" class="com.rsbi.ext.engine.view.emitter.chart.echarts.GaugeChart"/>
+	<chart shape="gauge2" class="com.rsbi.ext.engine.view.emitter.chart.echarts.GaugeChart2"/>
+	<chart shape="mgauge" class="com.rsbi.ext.engine.view.emitter.chart.echarts.GaugeChart3"/>
+	<chart shape="map" class="com.rsbi.ext.engine.view.emitter.chart.echarts.MapChart"/>
+	<chart shape="nestingPie" class="com.rsbi.ext.engine.view.emitter.chart.echarts.NestingPieChart"/>
+	<chart shape="pie" class="com.rsbi.ext.engine.view.emitter.chart.echarts.PieChart"/>
+	<chart shape="pie2" class="com.rsbi.ext.engine.view.emitter.chart.echarts.PieChart2"/>
+	<chart shape="radar" class="com.rsbi.ext.engine.view.emitter.chart.echarts.RadarChart"/>
+	<chart shape="scatter" class="com.rsbi.ext.engine.view.emitter.chart.echarts.ScatterChart"/>
+	<chart shape="scatterMap" class="com.rsbi.ext.engine.view.emitter.chart.echarts.ScatterMapChart"/>
 	
-	<db type="oracle" class="com.ruisi.ext.engine.dao.OracleHelperImpl"/>
-	<db type="mysql" class="com.ruisi.ext.engine.dao.MysqlHelperImpl"/>
-	<db type="sqlser" class="com.ruisi.ext.engine.dao.SqlServerHelperImpl"/>
-	<db type="db2" class="com.ruisi.ext.engine.dao.Db2HelperImpl"/>
-	<db type="hive" class="com.ruisi.ext.engine.dao.HiveHelperImpl"/>
-	<db type="kylin" class="com.ruisi.ext.engine.dao.KylinHelperImpl"/>
-	<db type="postgresql" class="com.ruisi.ext.engine.dao.PostgresqlHelperImpl"/>
+	<db type="oracle" class="com.rsbi.ext.engine.dao.OracleHelperImpl"/>
+	<db type="mysql" class="com.rsbi.ext.engine.dao.MysqlHelperImpl"/>
+	<db type="sqlser" class="com.rsbi.ext.engine.dao.SqlServerHelperImpl"/>
+	<db type="db2" class="com.rsbi.ext.engine.dao.Db2HelperImpl"/>
+	<db type="hive" class="com.rsbi.ext.engine.dao.HiveHelperImpl"/>
+	<db type="kylin" class="com.rsbi.ext.engine.dao.KylinHelperImpl"/>
+	<db type="postgresql" class="com.rsbi.ext.engine.dao.PostgresqlHelperImpl"/>
 	<db type="sqlite" class="com.ruisitech.bi.util.SqliteHelperImpl"/>
 
-	<service id="ext.sys.param.cascade" class="com.ruisi.ext.engine.service.impl.ParameterCascadeServiceImpl" result="global"/>
-	<service id="ext.sys.fenye.ajax" class="com.ruisi.ext.engine.service.impl.AjaxFenyeServiceImpl" result="global"/>
-	<service id="ext.sys.tab.ajax" class="com.ruisi.ext.engine.service.impl.TabAjaxService" result="global"/>
-	<service id="ext.sys.export" class="com.ruisi.ext.engine.service.impl.ExportServiceImpl" result="global"/>
-	<service id="ext.sys.chart.rebuild" class="com.ruisi.ext.engine.service.impl.ChartRebuildServiceImpl" result="global"/>
-	<service id="ext.sys.cross.loadData" class="com.ruisi.ext.engine.service.impl.CrossDataLoadServiceImpl" result="global"/>
-	<service id="ext.sys.cross.rebuild" class="com.ruisi.ext.engine.service.impl.CrossRebuildServiceImpl" result="global"/>
-	<service id="ext.sys.emitter.text" class="com.ruisi.ext.engine.service.impl.TextEmitterServiceImpl" result="global"/>
-	<service id="ext.sys.cross.export" class="com.ruisi.ext.engine.service.impl.CrossExportServiceImpl" result="global"/>
-	<service id="ext.sys.mv.export" class="com.ruisi.ext.engine.service.impl.MVExportServiceImpl" result="global"/>
-	<service id="ext.sys.gridreport.rebuild" class="com.ruisi.ext.engine.service.impl.GridReportRebuildImpl" result="global"/>
+	<service id="ext.sys.param.cascade" class="com.rsbi.ext.engine.service.impl.ParameterCascadeServiceImpl" result="global"/>
+	<service id="ext.sys.fenye.ajax" class="com.rsbi.ext.engine.service.impl.AjaxFenyeServiceImpl" result="global"/>
+	<service id="ext.sys.tab.ajax" class="com.rsbi.ext.engine.service.impl.TabAjaxService" result="global"/>
+	<service id="ext.sys.export" class="com.rsbi.ext.engine.service.impl.ExportServiceImpl" result="global"/>
+	<service id="ext.sys.chart.rebuild" class="com.rsbi.ext.engine.service.impl.ChartRebuildServiceImpl" result="global"/>
+	<service id="ext.sys.cross.loadData" class="com.rsbi.ext.engine.service.impl.CrossDataLoadServiceImpl" result="global"/>
+	<service id="ext.sys.cross.rebuild" class="com.rsbi.ext.engine.service.impl.CrossRebuildServiceImpl" result="global"/>
+	<service id="ext.sys.emitter.text" class="com.rsbi.ext.engine.service.impl.TextEmitterServiceImpl" result="global"/>
+	<service id="ext.sys.cross.export" class="com.rsbi.ext.engine.service.impl.CrossExportServiceImpl" result="global"/>
+	<service id="ext.sys.mv.export" class="com.rsbi.ext.engine.service.impl.MVExportServiceImpl" result="global"/>
+	<service id="ext.sys.gridreport.rebuild" class="com.rsbi.ext.engine.service.impl.GridReportRebuildImpl" result="global"/>
 
 </ext-config>

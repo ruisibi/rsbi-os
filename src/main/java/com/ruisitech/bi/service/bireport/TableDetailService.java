@@ -2,11 +2,11 @@ package com.ruisitech.bi.service.bireport;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ruisi.ext.engine.view.builder.dsource.DataSourceBuilder;
-import com.ruisi.ext.engine.view.context.dsource.DataSourceContext;
-import com.ruisi.ext.engine.view.context.grid.PageInfo;
-import com.ruisi.ext.engine.wrapper.ExtRequest;
-import com.ruisi.ext.engine.wrapper.TestRequestImpl;
+import com.rsbi.ext.engine.view.builder.dsource.DataSourceBuilder;
+import com.rsbi.ext.engine.view.context.dsource.DataSourceContext;
+import com.rsbi.ext.engine.view.context.grid.PageInfo;
+import com.rsbi.ext.engine.wrapper.ExtRequest;
+import com.rsbi.ext.engine.wrapper.TestRequestImpl;
 import com.ruisitech.bi.entity.bireport.TableDetailDto;
 import com.ruisitech.bi.entity.model.DataSource;
 import jxl.Workbook;

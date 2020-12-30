@@ -5,8 +5,8 @@
  */
 package com.ruisitech.bi.service.frame;
 
-import com.ruisi.ext.engine.dao.DaoHelper;
-import com.ruisi.ext.engine.dao.DaoHelperImpl;
+import com.rsbi.ext.engine.dao.DaoHelper;
+import com.rsbi.ext.engine.dao.DaoHelperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

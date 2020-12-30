@@ -1,6 +1,6 @@
 package com.ruisitech.bi.service.frame;
 
-import com.ruisi.ext.engine.dao.DaoHelper;
+import com.rsbi.ext.engine.dao.DaoHelper;
 import com.ruisitech.bi.entity.frame.User;
 import com.ruisitech.bi.mapper.frame.UserMapper;
 import com.ruisitech.bi.util.RSBIUtils;

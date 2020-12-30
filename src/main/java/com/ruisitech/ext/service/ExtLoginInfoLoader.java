@@ -1,8 +1,8 @@
 package com.ruisitech.ext.service;
 
-import com.ruisi.ext.engine.dao.DaoHelper;
-import com.ruisi.ext.engine.service.loginuser.LoginUserInfoLoader;
-import com.ruisi.ext.engine.wrapper.ExtRequest;
+import com.rsbi.ext.engine.dao.DaoHelper;
+import com.rsbi.ext.engine.service.loginuser.LoginUserInfoLoader;
+import com.rsbi.ext.engine.wrapper.ExtRequest;
 
 import java.util.HashMap;
 import java.util.Map;

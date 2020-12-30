@@ -1,9 +1,9 @@
 package com.ruisitech.ext.service;
 
-import com.ruisi.ext.engine.control.sys.LoginSecurityAdapter;
-import com.ruisi.ext.engine.dao.DaoHelper;
-import com.ruisi.ext.engine.wrapper.ExtRequest;
-import com.ruisi.ext.engine.wrapper.ExtResponse;
+import com.rsbi.ext.engine.control.sys.LoginSecurityAdapter;
+import com.rsbi.ext.engine.dao.DaoHelper;
+import com.rsbi.ext.engine.wrapper.ExtRequest;
+import com.rsbi.ext.engine.wrapper.ExtResponse;
 
 import javax.servlet.ServletContext;
 
