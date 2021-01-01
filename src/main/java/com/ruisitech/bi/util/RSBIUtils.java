@@ -2,7 +2,6 @@ package com.ruisitech.bi.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rsbi.ext.engine.view.context.ExtContext;
-import com.rsbi.ext.runtime.tag.CalendarTag;
 import com.ruisitech.bi.entity.frame.User;
 import com.ruisitech.bi.service.frame.ShiroDbRealm;
 import org.apache.ibatis.session.SqlSession;
@@ -208,12 +207,6 @@ public final class RSBIUtils {
 			}
 		}
 		return exist;
-	}
-	
-	public static String getFestival(Object key, HttpServletRequest req){
-		String df = (String)req.getAttribute("dateformat");
-		String ret = CalendarTag.getFestival((String)key, df);
-		return ret;
 	}
 	
 	/**
