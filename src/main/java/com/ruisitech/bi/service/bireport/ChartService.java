@@ -228,6 +228,12 @@ public class ChartService extends BaseCompService {
 		}
 		//不显示值
 		properties.add(new ChartKeyContext("showLabel", "false"));
+		if(xcol != null){
+			Integer top = xcol.getTop();
+			if(top != null){
+				properties.add(new ChartKeyContext("xcnt", String.valueOf(top)));
+			}
+		}
 		
 		ctx.setProperties(properties);
 		
