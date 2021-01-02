@@ -36,8 +36,7 @@ public class ChartController extends BaseController  {
 		//ser.setParams(tableService.getMvParams());
 		ser.initPreview();
 		String ret = ser.buildMV(mv, req.getServletContext());
-		System.out.println(ret);
 		JSONObject obj = JSONObject.parseObject(ret);
-		return super.buildSucces(obj.toJSONString());
+		return super.buildSucces(obj);
 	}
 }

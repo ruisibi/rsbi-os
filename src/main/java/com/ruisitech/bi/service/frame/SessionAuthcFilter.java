@@ -39,7 +39,7 @@ public class SessionAuthcFilter extends AdviceFilter {
 			}else{
 				response.setContentType("application/json; charset=utf-8");
 				response.setCharacterEncoding("utf-8");
-				Result r = new Result(RequestStatus.FAIL_FIELD.getStatus(), "登录信息已经超时。", null);
+				Result r = new Result(RequestStatus.NOLOGIN.getStatus(), "登录信息已经超时，请重新登录！", null);
 				response.getWriter().print(JSONObject.toJSONString(r));
 				return false;
 			}
@@ -49,7 +49,7 @@ public class SessionAuthcFilter extends AdviceFilter {
 		}else{
 			response.setContentType("application/json; charset=utf-8");
 			response.setCharacterEncoding("utf-8");
-			Result r = new Result(RequestStatus.FAIL_FIELD.getStatus(), "登录信息已经超时。", null);
+			Result r = new Result(RequestStatus.NOLOGIN.getStatus(), "登录信息已经超时，请重新登录！", null);
 			response.getWriter().print(JSONObject.toJSONString(r));
 			return false;
 		}

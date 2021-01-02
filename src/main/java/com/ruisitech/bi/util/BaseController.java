@@ -24,4 +24,8 @@ public class BaseController {
 	public Object buildError(String msg){
 		return new Result(RequestStatus.FAIL_FIELD.getStatus(), msg, null);
 	}
+
+	public Object buildNoLoginError(String msg){
+		return new Result(RequestStatus.NOLOGIN.getStatus(), msg, null);
+	}
 }

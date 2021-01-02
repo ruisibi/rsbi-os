@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/bireport")
@@ -108,23 +110,22 @@ public class ReportDesignController extends BaseController {
 	}
 	
 	@RequestMapping(value="/kpidesc.action")
-	public String kpidesc(Integer cubeId, ModelMap model){
-		model.addAttribute("ls", service.listKpiDesc(cubeId));
-		return "bireport/DataSet-kpidesc";
+	public @ResponseBody Object kpidesc(Integer cubeId){
+		List<Map<String, Object>>  ret = service.listKpiDesc(cubeId);
+		return super.buildSucces(ret);
 	}
 	
 	@RequestMapping(value="/print.action", method = RequestMethod.POST)
-	public Object print(String pageInfo, HttpServletRequest req, HttpServletResponse res) throws Exception{
+	public @ResponseBody Object print(String pageInfo, HttpServletRequest req, HttpServletResponse res) throws Exception{
 		ExtContext.getInstance().removeMV(ReportService.deftMvId);
 		JSONObject obj = (JSONObject)JSON.parse(pageInfo);
 		MVContext mv = reportService.json2MV(obj, 0);
 		CompPreviewService ser = new CompPreviewService(req, res, req.getServletContext());
 		ser.setParams(null);
 		ser.initPreview();
-		
+
 		String ret = ser.buildMV(mv, req.getServletContext());
-		req.setAttribute("data", ret);
-		
-		return "bireport/ReportDesign-print";
+		JSONObject json = JSONObject.parseObject(ret);
+		return super.buildSucces(json);
 	}
 }
