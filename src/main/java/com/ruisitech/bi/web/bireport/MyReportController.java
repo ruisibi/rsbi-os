@@ -22,10 +22,15 @@ public class MyReportController extends BaseController {
 	private OlapService service;
 	
 	@RequestMapping(value="/listReport.action")
-	public String list(String keyword, ModelMap model){
+	public @ResponseBody Object list(String keyword){
 		List<OlapInfo> ret = service.listreport(keyword);
-		model.addAttribute("ls", ret);
-		return "bireport/MyReport-list";
+		return super.buildSucces(ret);
+	}
+
+	@RequestMapping(value="/getReport.action")
+	public @ResponseBody Object getReport(Integer pageId){
+		OlapInfo olap = service.getOlap(pageId);
+		return super.buildSucces(olap);
 	}
 	
 	@RequestMapping(value="/saveReport.action", method = RequestMethod.POST)

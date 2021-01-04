@@ -1,5 +1,6 @@
 package com.ruisitech.bi.entity.bireport;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruisitech.bi.entity.common.BaseEntity;
 import com.ruisitech.bi.util.RSBIUtils;
 
@@ -11,7 +12,9 @@ public class OlapInfo extends BaseEntity {
 	private Integer userId;
 	private String pageInfo;
 	private String pageName;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date crtDate;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updateDate;
 	private String crtuser;
 	
