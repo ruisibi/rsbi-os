@@ -254,7 +254,7 @@ public class ReportService extends BaseCompService {
 			mv.getChildren().add(txt);
 			txt.setParent(mv);
 		}
-		ChartContext cr = chartService.json2Chart(chart.getChartJson(), chart.getKpiJson(), false);
+		ChartContext cr = chartService.json2Chart(chart, false);
 		
 		String sql = chartService.createSql(chart, release);
 		GridDataCenterContext dc = chartService.createDataCenter(chart.getChartJson(), sql);

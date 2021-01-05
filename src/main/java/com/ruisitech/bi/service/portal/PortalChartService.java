@@ -118,6 +118,7 @@ public class PortalChartService extends BaseCompService {
 	
 	public ChartContext json2Chart(PortalChartQuery chart, String compId, boolean is3g){
 		ChartContext ctx = new ChartContextImpl();
+		ctx.setId(chart.getId());
 		ChartJSONDto chartJson = chart.getChartJson();
 		//设置x
 		DimDto obj = chartJson.getXcol();

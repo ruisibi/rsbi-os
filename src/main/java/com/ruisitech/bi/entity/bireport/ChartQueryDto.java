@@ -8,6 +8,7 @@ public class ChartQueryDto extends BaseEntity {
 
 	private String dsid;
 	private String dsetId;
+	private String id;
 
 	private List<KpiDto> kpiJson;
 	
@@ -46,6 +47,15 @@ public class ChartQueryDto extends BaseEntity {
 	public void setDsetId(String dsetId) {
 		this.dsetId = dsetId;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	@Override
 	public void validate() {
 		 

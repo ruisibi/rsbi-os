@@ -66,7 +66,7 @@ public class ChartService extends BaseCompService {
 		mv.setMvid(deftMvId);
 		
 		//创建chart
-		ChartContext cr = this.json2Chart(chart.getChartJson(), chart.getKpiJson(), false);
+		ChartContext cr = this.json2Chart(chart, false);
 		cr.setXlsData(xlsdata);
 		
 		String sql = this.createSql(chart, 0);
@@ -90,7 +90,9 @@ public class ChartService extends BaseCompService {
 		return mv;
 	}
 	
-	public ChartContext json2Chart(ChartJSONDto chartJson, List<KpiDto> kpiJson, boolean is3g){
+	public ChartContext json2Chart(ChartQueryDto chart, boolean is3g){
+		ChartJSONDto chartJson = chart.getChartJson();
+		List<KpiDto> kpiJson = chart.getKpiJson();
 		ChartContext ctx = new ChartContextImpl();
 		ctx.setLabel(chartJson.getLabel());
 		//设置x
@@ -147,8 +149,7 @@ public class ChartService extends BaseCompService {
 		ctx.setHeight("240");
 		
 		//设置ID
-		String chartId = ExtConstants.chartIdPrefix + IdCreater.create();
-		ctx.setId(chartId);
+		ctx.setId(chart.getId());
 		
 		//设置配置信息
 		List<ChartKeyContext> properties = new ArrayList<ChartKeyContext>();
