@@ -289,21 +289,25 @@ public class ChartService extends BaseCompService {
 		//第二个指标
 		if(chart.getKpiJson().size() > 1){
 			KpiDto sinfo = chart.getKpiJson().get(1);
-			if(sinfo.getFmt() != null && sinfo.getFmt().length() > 0){
-				sql.append("'"+sinfo.getFmt()+"' kpi_fmt2,");
-			}
-			if(sinfo.getUnit() != null && sinfo.getUnit().length() > 0){
-				sql.append("'" +sinfo.getUnit()+"' kpi_unit2,");
+			if(sinfo != null) {
+				if (sinfo.getFmt() != null && sinfo.getFmt().length() > 0) {
+					sql.append("'" + sinfo.getFmt() + "' kpi_fmt2,");
+				}
+				if (sinfo.getUnit() != null && sinfo.getUnit().length() > 0) {
+					sql.append("'" + sinfo.getUnit() + "' kpi_unit2,");
+				}
 			}
 		}
 		//第三个指标
 		if(chart.getKpiJson().size() > 2){
 			KpiDto sinfo = chart.getKpiJson().get(2);
-			if(sinfo.getFmt() != null && sinfo.getFmt().length() > 0){
-				sql.append("'"+sinfo.getFmt()+"' kpi_fmt3,");
-			}
-			if(sinfo.getUnit() != null && sinfo.getUnit().length() > 0){
-				sql.append("'" +sinfo.getUnit()+"' kpi_unit3,");
+			if(sinfo != null) {
+				if (sinfo.getFmt() != null && sinfo.getFmt().length() > 0) {
+					sql.append("'" + sinfo.getFmt() + "' kpi_fmt3,");
+				}
+				if (sinfo.getUnit() != null && sinfo.getUnit().length() > 0) {
+					sql.append("'" + sinfo.getUnit() + "' kpi_unit3,");
+				}
 			}
 		}
 		
@@ -313,6 +317,9 @@ public class ChartService extends BaseCompService {
 		}else{
 			for(int i=0; i<kpis.size(); i++){
 				KpiDto kpi = kpis.get(i);
+				if(kpi == null){
+					continue;
+				}
 				if(kpi.getCalc() != null && kpi.getCalc() == 1){  //表达式，直接取表达式
 					sql.append(kpi.getCol_name() + " ");
 				}else{  //获取字段别名
@@ -456,6 +463,9 @@ public class ChartService extends BaseCompService {
 		//处理指标过滤
 		StringBuffer filter = new StringBuffer("");
 		for(KpiDto kpi : chart.getKpiJson()){
+			if(kpi == null){
+				continue;
+			}
 			if(kpi.getFilter() != null){
 				filter.append(" and "+kpi.getCol_name()+" ");
 				String tp = kpi.getFilter().getFilterType();
