@@ -2,6 +2,7 @@ package com.ruisitech.bi.service.bireport;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rsbi.ext.engine.util.P;
 import com.rsbi.ext.engine.view.builder.dsource.DataSourceBuilder;
 import com.rsbi.ext.engine.view.context.dsource.DataSourceContext;
 import com.rsbi.ext.engine.view.context.grid.PageInfo;
@@ -78,7 +79,7 @@ public class TableDetailService extends BaseCompService {
 			String linktype = ds.getLinkType();
 			dsource.putProperty("linktype", linktype);
 			dsource.putProperty("linkname", ds.getLinkName());
-			dsource.putProperty("linkpwd", ds.getLinkPwd());
+			dsource.putProperty("linkpwd", P.encode(ds.getLinkPwd()));
 			dsource.putProperty("linkurl", ds.getLinkUrl());
 		}else{
 			dsource.putProperty("jndiname", ds.getJndiName());

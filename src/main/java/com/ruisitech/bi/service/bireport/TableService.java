@@ -88,7 +88,7 @@ public class TableService extends BaseCompService {
 		String id = ExtConstants.reportIdPrefix + IdCreater.create();
 		cr.setId(id);
 		cr.setOut("olapJson");
-		cr.setShowData(true);
+		cr.setHasPms(true);  //包含多维分析的参数
 
 		mv.getChildren().add(cr);
 		cr.setParent(mv);

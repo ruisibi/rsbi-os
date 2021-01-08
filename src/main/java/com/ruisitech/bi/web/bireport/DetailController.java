@@ -51,7 +51,7 @@ public class DetailController extends BaseController {
 	public @ResponseBody
     Object header(TableDetailDto dto) {
 		JSONArray ls = detailService.getTableHeader(dto);
-		return ls.toString();
+		return super.buildSucces(ls);
 	}
 	
 	/**
