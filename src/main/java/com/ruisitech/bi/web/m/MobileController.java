@@ -18,21 +18,10 @@ public class MobileController extends BaseController {
 	@Autowired
 	private MobReportTypeService service;
 
-	@RequestMapping(value="/MbIntro.action")
-	public String intro() {
-		return "mobile/MbIntro";
-	}
-	
 	@RequestMapping(value="/typeTree.action")
 	public @ResponseBody
     Object tree() {
 		return service.listcataTree(); 
-	}
-	
-	@RequestMapping(value="/MobReportType.action")
-	public String mReportType(ModelMap model) {
-		model.addAttribute("str", JSONObject.toJSONString(service.listcataTree()));
-		return "m/MobReportType";
 	}
 	
 	@RequestMapping(value="/addType.action", method = RequestMethod.POST)

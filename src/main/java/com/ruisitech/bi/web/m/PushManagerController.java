@@ -23,12 +23,6 @@ public class PushManagerController extends BaseController {
 	@Autowired
 	private PortalService portalService;
 	
-	@RequestMapping(value="/PushManager.action")
-	public String index(ModelMap model) {
-		model.addAttribute("str", JSONObject.toJSONString(service.listcataTree()));
-		return "m/PushManager";
-	}
-	
 	@RequestMapping(value="/pushList.action")
 	public @ResponseBody
     Object list(Integer cataId) {
