@@ -1,5 +1,6 @@
 package com.ruisitech.bi.entity.portal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruisitech.bi.entity.common.BaseEntity;
 import com.ruisitech.bi.util.RSBIUtils;
 
@@ -15,7 +16,9 @@ public class Portal extends BaseEntity {
 	private String is3g;
 	private Integer cataId;
 	private String cataName;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date crtDate;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updateDate;
 	
 	public String getPageId() {

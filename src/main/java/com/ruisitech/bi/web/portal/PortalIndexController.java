@@ -1,6 +1,10 @@
 package com.ruisitech.bi.web.portal;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ruisitech.bi.entity.common.PageParam;
+import com.ruisitech.bi.entity.frame.User;
 import com.ruisitech.bi.entity.portal.Portal;
 import com.ruisitech.bi.service.portal.PortalService;
 import com.ruisitech.bi.util.BaseController;
@@ -20,25 +24,6 @@ public class PortalIndexController extends BaseController {
 	
 	@Autowired
 	private PortalService portalService;
-
-	@RequestMapping(value="/customization.action")
-	public String customization(String pageId, String menus, String is3g, ModelMap model) {
-		if(menus != null && menus.length() > 0){
-			JSONObject obj = JSONObject.parseObject(menus);
-			model.addAttribute("menuDisp", obj);
-		}
-		String pageInfo = pageId == null ? null : portalService.getPortalCfg(pageId);
-		model.addAttribute("pageInfo", pageInfo);
-		model.addAttribute("is3g", is3g);
-		return "portal/PortalIndex-customiz";
-	}
-	
-	@RequestMapping(value="/PortalIndex.action")
-	public String index(ModelMap model) {
-		List<Portal> ls = portalService.listPortal();
-		model.addAttribute("ls", ls);
-		return "portal/PortalIndex";
-	}
 	
 	@RequestMapping(value="/delete.action")
 	public @ResponseBody
@@ -46,19 +31,30 @@ public class PortalIndexController extends BaseController {
 		portalService.deletePortal(pageId);
 		return this.buildSucces();
 	}
+
+	@RequestMapping(value="/get.action")
+	public @ResponseBody
+	Object get(String pageId) {
+		String str = portalService.getPortalCfg(pageId);
+		return this.buildSucces(str);
+	}
+
+	@RequestMapping(value="/list.action")
+	public @ResponseBody
+	Object list(PageParam page) {
+		if(page != null && page.getPage() != null && page.getRows() != null){
+			PageHelper.startPage(page.getPage(), page.getRows());
+		}
+		List<Portal> ls = portalService.listPortal();
+		PageInfo<Portal> pageInfo=new PageInfo<>(ls);
+		return this.buildSucces(pageInfo);
+	}
 	
 	@RequestMapping(value="/rename.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object rename(Portal portal) {
 		portalService.renamePortal(portal);
 		return this.buildSucces();
-	}
-	
-	@RequestMapping(value="/show.action")
-	public String show(String pageId, String income, ModelMap model) {
-		model.addAttribute("pageId", pageId);
-		model.addAttribute("income", income);
-		return "portal/PortalIndex-show";
 	}
 	
 	@RequestMapping(value="/save.action", method = RequestMethod.POST)
