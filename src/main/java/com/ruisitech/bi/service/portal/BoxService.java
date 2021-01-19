@@ -61,10 +61,9 @@ public class BoxService extends BaseCompService {
 		//处理参数,把参数设为hidden
 		super.parserHiddenParam(box.getPortalParams(), mv, mvParams);	
 		
-		this.json2Box(box, mv, false);
+		this.json2Box(box, mv);
 		
 		super.createDsource(this.cacheService.getDsource(box.getDsid()), mv);
-		
 		
 		return mv;
 	}
@@ -74,22 +73,11 @@ public class BoxService extends BaseCompService {
 	 * @param mv
 	 * @throws IOException 
 	 */
-	public void json2Box(BoxQuery box, Element mv, boolean crtTitle) throws IOException{
+	public void json2Box(BoxQuery box, Element mv) throws IOException{
 		if(box.getKpiJson()== null){
 			return;
 		}
-		//创建标题
-		if(crtTitle){
-			TextContext text = new TextContextImpl();
-			TextProperty tp = new TextProperty();
-			tp.setAlign("center");
-			tp.setColor(box.getKpiJson().getTfontcolor());
-			tp.setStyleClass("ibox-title-view");
-			text.setText(box.getName());
-			text.setTextProperty(tp);
-			mv.getChildren().add(text);
-			text.setParent(mv);
-		}
+
 		//创建box 的 data 标签
 		String sql = createSql(box);
 		DataContext data = new DataContextImpl();
@@ -99,41 +87,18 @@ public class BoxService extends BaseCompService {
 		data.setTemplateName(name);
 		mv.getChildren().add(data);
 		data.setParent(mv);
-		
-		//创建box 显示 text 标签
+
 		KpiDto kpi = box.getKpiJson();
 		TextContext text = new TextContextImpl();
-		String str = "#if($!k"+kpi.getKpi_id()+"."+kpi.getAlias()+") $extUtils.numberFmt($!k"+kpi.getKpi_id()+"."+kpi.getAlias()+", '"+kpi.getFmt()+"') <font size='2'>" ;
-		Object rate = kpi.getRate();
-		if(rate != null){
-			str += ChartUtils.writerUnit(new Integer(rate.toString()));
-		}
-		str += kpi.getUnit()+"</font>";
-		str += "#else - #end";
+		Integer id = box.getKpiJson().getKpi_id();
+		String alias = box.getKpiJson().getAlias();
+		String p1 = id+"."+alias;
+		String alias2 = box.getKpiJson().getAlias()+"_sq";
+		String p2 = id + "." + alias2;
+		String fmt =box.getKpiJson().getFmt();
+		String str = " {\"trueValue\":"+"$!k"+p1+", value:\"$extUtils.numberFmt($!k"+p1+", '"+(fmt==null?"":fmt)+"')\", alias:\""+alias+"\", desc:\""+kpi.getKpi_name()+"\"}";
 		String word = TemplateManager.getInstance().createTemplate(str);
 		text.setTemplateName(word);
-		text.setFormatHtml(true);
-		TextProperty tp = new TextProperty();
-		tp.setAlign("center");
-		tp.setWeight("normal");
-		if(box.getHeight() != null){
-			tp.setLineHeight(box.getHeight());
-			tp.setHeight(String.valueOf(box.getHeight()));
-		}
-		Integer tfontsize = box.getKpiJson().getTfontsize();
-		if(tfontsize != null){
-			tp.setSize(String.valueOf(tfontsize));
-		}else{
-			tp.setSize("32");
-		}
-		String tfontcolor = box.getKpiJson().getTfontcolor();
-		if(tfontcolor != null && tfontcolor.length() > 0){
-			tp.setColor(tfontcolor);
-		}else{
-			tp.setColor("#000000");
-		}
-		tp.setStyleClass("boxcls");
-		text.setTextProperty(tp);
 		mv.getChildren().add(text);
 		text.setParent(mv);
 	}

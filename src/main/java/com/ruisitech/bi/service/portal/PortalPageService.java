@@ -485,7 +485,7 @@ public class PortalPageService extends BaseCompService {
 		if(!this.dsids.contains(dsid)){
 			dsids.add(dsid);
 		}
-		boxSerivce.json2Box(compJson, td, true);
+		boxSerivce.json2Box(compJson, td);
 		if(!this.dsids.contains(compJson.getDsid())){
 			this.dsids.add(compJson.getDsid());
 		}
