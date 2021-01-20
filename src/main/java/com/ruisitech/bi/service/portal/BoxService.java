@@ -96,7 +96,26 @@ public class BoxService extends BaseCompService {
 		String alias2 = box.getKpiJson().getAlias()+"_sq";
 		String p2 = id + "." + alias2;
 		String fmt =box.getKpiJson().getFmt();
-		String str = " {\"trueValue\":"+"$!k"+p1+", value:\"$extUtils.numberFmt($!k"+p1+", '"+(fmt==null?"":fmt)+"')\", alias:\""+alias+"\", desc:\""+kpi.getKpi_name()+"\"}";
+		Integer rate = box.getKpiJson().getRate();
+		String s = "";
+		if(rate != null){
+			s += ChartUtils.writerUnit(new Integer(rate.toString()));
+		}
+		String unit = box.getKpiJson().getUnit();
+		if(unit == null){
+			unit = "";
+		}
+		unit = s + unit;
+		String str = " {\"trueValue\":"+"$!k"+p1+", ";
+		str += "value:\"$extUtils.numberFmt($!k"+p1+", '"+(fmt==null?"":fmt)+"')"+unit+"\", ";
+		str += "alias:\""+alias+"\", ";
+		if(kpi.getTfontsize() != null){
+			str += "fontsize:"+kpi.getTfontsize()+",";
+		}
+		if(kpi.getTfontcolor() != null && kpi.getTfontcolor().length() > 0){
+			str += "fontcolor:'"+kpi.getTfontcolor()+"',";
+		}
+		str += "desc:\""+kpi.getKpi_name()+"\"}";
 		String word = TemplateManager.getInstance().createTemplate(str);
 		text.setTemplateName(word);
 		mv.getChildren().add(text);
