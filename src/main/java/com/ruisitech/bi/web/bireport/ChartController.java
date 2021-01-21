@@ -3,7 +3,9 @@ package com.ruisitech.bi.web.bireport;
 import com.alibaba.fastjson.JSONObject;
 import com.rsbi.ext.engine.view.context.ExtContext;
 import com.rsbi.ext.engine.view.context.MVContext;
+import com.ruisitech.bi.entity.bireport.Area;
 import com.ruisitech.bi.entity.bireport.ChartQueryDto;
+import com.ruisitech.bi.service.bireport.AreaService;
 import com.ruisitech.bi.service.bireport.ChartService;
 import com.ruisitech.bi.util.BaseController;
 import com.ruisitech.bi.util.CompPreviewService;
@@ -27,6 +29,9 @@ public class ChartController extends BaseController  {
 	@Autowired
 	private ChartService chartService;
 
+	@Autowired
+	private AreaService areaService;
+
 	private static Logger logger = Logger.getLogger(TableController.class);
 
 	@RequestMapping(value="/ChartView.action", method = RequestMethod.POST)
@@ -48,5 +53,27 @@ public class ChartController extends BaseController  {
 			logger.error("图形展现出错", ex);
 			return super.buildError(ex.getMessage());
 		}
+	}
+
+	@RequestMapping(value="/listAreas.action")
+	public @ResponseBody Object listAreas(){
+		return super.buildSucces(areaService.listProvAndCitys());
+	}
+
+
+	@RequestMapping(value="/getProvByName.action")
+	public @ResponseBody Object getProvByName(String name){
+		return super.buildSucces(areaService.getProvByName(name));
+	}
+
+	@RequestMapping(value="/getCityByName.action")
+	public @ResponseBody Object getCityByName(String name){
+		return super.buildSucces(areaService.getCityByName(name));
+	}
+
+	@RequestMapping(value="/getProvByCityCode.action")
+	public @ResponseBody Object getProvByCityCode(String code){
+		Area area = areaService.getProvByCityCode(code);
+		return super.buildSucces(area);
 	}
 }

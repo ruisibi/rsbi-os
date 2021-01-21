@@ -3,13 +3,51 @@
 <mapper namespace="com.ruisitech.bi.mapper.bireport.AreaMapper">
     <resultMap id="BaseResultMap" type="com.ruisitech.bi.entity.bireport.Area">
 		<id column="id" property="id"/>
-		<result column="code" property="code"/>
+		<result column="prov_code" property="provCode"/>
 		<result column="prov_name" property="provName"/>
+		<result column="city_code" property="cityCode"/>
 		<result column="city_name" property="cityName"/>
+		<result column="town_code" property="townCode"/>
+		<result column="town_name" property="townName"/>
     </resultMap>
     
     <select id="listCityByProvCode" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select * from code_area where code = #{code}
+		select DISTINCT city_code, city_name from code_town where prov_code = #{code}
 	</select>
 	
+	<select id="listTownByCityCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select DISTINCT town_code, town_name from code_town where city_code = #{code}
+	</select>
+	
+	<select id="getProvByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select DISTINCT prov_code, prov_name from code_town where prov_name = #{name}
+	</select>
+	
+	<select id="getCityByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select DISTINCT city_code, city_name from code_town where city_name = #{name}
+	</select>
+	
+	<select id="listProvAndCitys" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select DISTINCT prov_code as code, prov_name as name from code_town
+		union all
+		select DISTINCT city_code, 
+		<if test="dbName == 'oracle'">
+		'--' || city_name 
+		</if>
+		<if test="dbName == 'mysql'">
+		concat('--',city_name) 
+		</if>
+		<if test="dbName == 'sqlser'">
+		'--' + city_name 
+		</if>
+		<if test="dbName == 'sqlite'">
+			'--' || city_name
+		</if>
+		city_name from code_town where zxs != 1
+		order by code
+	</select>
+	
+	<select id="getProvByCityCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select DISTINCT prov_code, prov_name from code_town where city_code = #{code}
+	</select>
 </mapper>
