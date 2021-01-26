@@ -27,6 +27,7 @@ public class ChartJSONDto {
 	private String legendpos;
 	private String legendPosition;
 	private String dataLabel;
+	private String dataLabelColor;
 	private String marginLeft;
 	private String marginRight;
 	private String markerEnabled;
@@ -194,5 +195,12 @@ public class ChartJSONDto {
 	public void setMarkerEnabled(String markerEnabled) {
 		this.markerEnabled = markerEnabled;
 	}
-	
+
+	public String getDataLabelColor() {
+		return dataLabelColor;
+	}
+
+	public void setDataLabelColor(String dataLabelColor) {
+		this.dataLabelColor = dataLabelColor;
+	}
 }

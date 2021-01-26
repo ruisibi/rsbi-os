@@ -264,6 +264,10 @@ public class PortalChartService extends BaseCompService {
 			ChartKeyContext val3 = new ChartKeyContext("showLabel", "true");
 			properties.add(val3);
 		}
+		String dataLabelColor = chartJson.getDataLabelColor();
+		if(dataLabelColor != null && dataLabelColor.length() > 0){
+			properties.add(new ChartKeyContext("dataLabelColor", dataLabelColor));
+		}
 		
 		//设置仪表盘数量
 		ChartKeyContext val1 = new ChartKeyContext("gaugeCnt", "1");
