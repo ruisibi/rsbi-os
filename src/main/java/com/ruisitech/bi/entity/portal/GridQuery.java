@@ -19,6 +19,7 @@ public class GridQuery extends BaseEntity {
 	private String lockhead;
 	private Integer height;
 	private Integer pageSize;
+	private Integer curPage;
 	private String isnotfy;
 	
 	public String getId() {
@@ -93,6 +94,18 @@ public class GridQuery extends BaseEntity {
 	public void setIsnotfy(String isnotfy) {
 		this.isnotfy = isnotfy;
 	}
+
+	public Integer getCurPage() {
+		if(curPage == null){
+			return 0;
+		}
+		return curPage;
+	}
+
+	public void setCurPage(Integer curPage) {
+		this.curPage = curPage;
+	}
+
 	@Override
 	public void validate() {
 		this.name = RSBIUtils.htmlEscape(this.name);

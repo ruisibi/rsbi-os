@@ -142,6 +142,7 @@ public class GridService extends BaseCompService {
 		}
 		PageInfo page = new PageInfo();
 		page.setPagesize(pageSize);
+		page.setCurtpage(gridJson.getCurPage());
 		//是否禁用分页
 		String isnotfy = gridJson.getIsnotfy();
 		if("true".equals(isnotfy)){
