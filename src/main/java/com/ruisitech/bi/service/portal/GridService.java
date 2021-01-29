@@ -111,6 +111,7 @@ public class GridService extends BaseCompService {
 			String dispName = col.getDispName();
 			cell.setDesc(dispName == null || dispName.length() == 0 ? name : dispName);
 			cell.setAlias(id);
+			cell.setAlign(col.getAlign());
 			headers[0][i] = cell;
 		}
 		grid.setHeaders(headers);
@@ -279,7 +280,7 @@ public class GridService extends BaseCompService {
 			String tname = col.getTname();
 			String expression = col.getExpression();
 			if(sort != null && sort.length() > 0){
-				sb.append(" order by "+(expression != null && expression.length() > 0 ? "" :tableAlias.get(tname)+".") + id + " ");
+				sb.append(" order by " + id + " ");
 				sb.append(sort);
 				break;
 			}
