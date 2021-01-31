@@ -440,6 +440,7 @@ public class PortalTableService  extends BaseCompService {
 		GridDataCenterContext ctx = new GridDataCenterContextImpl();
 		GridSetConfContext conf = new GridSetConfContext();
 		conf.setRefDsource(table.getDsid());
+		conf.setUseCache(false);
 		ctx.setConf(conf);
 		ctx.setId("DC-" + IdCreater.create());
 		String name = TemplateManager.getInstance().createTemplate(sql);
