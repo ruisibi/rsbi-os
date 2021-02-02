@@ -700,11 +700,7 @@ public class TableService extends BaseCompService {
 						cf.setJsFunc(kpi.getFuncname());
 						String code = kpi.getCode();
 						if(code != null && code.length() > 0){
-							try {
-								code = URLDecoder.decode(code, "UTF-8");
-							} catch (UnsupportedEncodingException e) {
-								e.printStackTrace();
-							}
+							code = RSBIUtils.unescape(code);
 							this.scripts.append("function "+cf.getJsFunc()+"(value,col,row,data){"+code+"}");
 						}
 						
@@ -753,11 +749,7 @@ public class TableService extends BaseCompService {
 							cf.setJsFunc(kpi.getFuncname());
 							String code = kpi.getCode();
 							if(code != null && code.length() > 0){
-								try {
-									code = URLDecoder.decode(code, "UTF-8");
-								} catch (UnsupportedEncodingException e) {
-									e.printStackTrace();
-								}
+								code = RSBIUtils.unescape(code);
 								this.scripts.append("function "+cf.getJsFunc()+"(value,col,row,data){"+code+"}");
 							}
 							//处理指标预警
