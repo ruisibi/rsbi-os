@@ -25,6 +25,7 @@ public class PortalChartQuery {
 	private Integer cubeId;
 	private String name;
 	private String type;
+	private Integer height; //高度
 	
 	private Map<String, Object> style = new HashMap<String, Object>();
 	private Map<String, Integer> colors;  //系列颜色
@@ -115,5 +116,12 @@ public class PortalChartQuery {
 	public void setColors(Map<String, Integer> colors) {
 		this.colors = colors;
 	}
-	
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
+	}
 }

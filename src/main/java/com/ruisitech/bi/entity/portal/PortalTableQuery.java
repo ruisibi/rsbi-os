@@ -27,7 +27,7 @@ public class PortalTableQuery extends BaseEntity {
 	private List<PortalParamDto> portalParams;
 	private List<CompParamDto> params;
 	private String lockhead;
-	private String height;
+	private Integer height;
 	private String showtitle;
 	private Map<String, Object> style;
 	
@@ -125,12 +125,15 @@ public class PortalTableQuery extends BaseEntity {
 	public void setLockhead(String lockhead) {
 		this.lockhead = lockhead;
 	}
-	public String getHeight() {
+
+	public Integer getHeight() {
 		return height;
 	}
-	public void setHeight(String height) {
+
+	public void setHeight(Integer height) {
 		this.height = height;
 	}
+
 	public List<DimDto> getDims(){
 		List<DimDto> ret = new ArrayList<DimDto>();
 		ret.addAll(this.cols);

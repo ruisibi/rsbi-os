@@ -684,10 +684,6 @@ public class PortalPageService extends BaseCompService {
 		String id = ExtConstants.reportIdPrefix + IdCreater.create();
 		cr.setId(id);
 		cr.setOut("lockUI");
-		String height = table.getHeight();
-		if(height != null && height.length() > 0){
-			cr.setHeight(height);
-		}
 		cr.setShowData(true);
 		if(mybaseKpi != null){
 			cr.setBaseKpi(mybaseKpi);

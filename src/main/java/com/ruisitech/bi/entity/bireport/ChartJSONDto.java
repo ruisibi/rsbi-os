@@ -20,8 +20,6 @@ public class ChartJSONDto {
 	
 	private String maparea;
 	private String mapAreaName;
-	private String height;
-	private String width;
 	private String showLegend;
 	private String legendLayout;
 	private String legendpos;
@@ -115,21 +113,6 @@ public class ChartJSONDto {
 	}
 	public void setTypeIndex(Integer typeIndex) {
 		this.typeIndex = typeIndex;
-	}
-	public String getHeight() {
-		return height;
-	}
-
-	public void setHeight(String height) {
-		this.height = height;
-	}
-
-	public String getWidth() {
-		return width;
-	}
-
-	public void setWidth(String width) {
-		this.width = width;
 	}
 
 	public String getShowLegend() {
