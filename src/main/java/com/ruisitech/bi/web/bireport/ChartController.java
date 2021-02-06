@@ -1,5 +1,6 @@
 package com.ruisitech.bi.web.bireport;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rsbi.ext.engine.view.context.ExtContext;
 import com.rsbi.ext.engine.view.context.MVContext;
@@ -37,6 +38,7 @@ public class ChartController extends BaseController  {
 	@RequestMapping(value="/ChartView.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object chartView(@RequestBody ChartQueryDto chartJson, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		chartJson.setId("c1");
 		ExtContext.getInstance().removeMV(ChartService.deftMvId);
 		MVContext mv = chartService.json2MV(chartJson, false);
 		try {
@@ -45,6 +47,7 @@ public class ChartController extends BaseController  {
 			ser.initPreview();
 			String ret = ser.buildMV(mv, req.getServletContext());
 			JSONObject obj = JSONObject.parseObject(ret);
+			obj = obj.getJSONObject(chartJson.getId());
 			if(obj.get("result") != null && obj.getInteger("result") == 500){
 				return super.buildError(obj.getString("msg"));
 			}

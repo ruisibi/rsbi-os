@@ -118,6 +118,7 @@ public class BoxService extends BaseCompService {
 		str += "desc:\""+kpi.getKpi_name()+"\"}";
 		String word = TemplateManager.getInstance().createTemplate(str);
 		text.setTemplateName(word);
+		text.setId(box.getId());
 		mv.getChildren().add(text);
 		text.setParent(mv);
 	}

@@ -15,8 +15,8 @@
     </resultMap>
 	
 	<select id="listPortal" resultMap="BaseResultMap">
-		select pageid, pagename , crtdate , updatedate  from portal_user_save 
-		where is3g = 'n'
+		select pageid, pagename , crtdate , updatedate, b.user_id, b.login_name  from portal_user_save a, sc_login_user b
+		where is3g = 'n' and a.user_id = b.user_id
 		order by crtdate desc
 	</select>
 	

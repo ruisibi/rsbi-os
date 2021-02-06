@@ -67,9 +67,7 @@ public class PortalTableService  extends BaseCompService {
 	
 	/**
 	 * 生成表格SQL
-	 * @param sqlVO
-	 * @param tinfo
-	 * @param params
+	 * @param table
 	 * @param release  判断当前是否为发布状态, 0 表示不是发布，1表示发布到多维分析，2表示发布到仪表盘
 	 * @param drillLevel 是否有钻取，从0开始, 0表示不钻取，1表示钻取一层，以此类推
 	 * @return
@@ -365,8 +363,7 @@ public class PortalTableService  extends BaseCompService {
 			cols.remove(cols.size() - 1);
 		}
 		//设置ID
-		String id = ExtConstants.reportIdPrefix + IdCreater.create();
-		cr.setId(id);
+		cr.setId(table.getId());
 		cr.setOut("lockUI");
 		cr.setShowData(true);
 		

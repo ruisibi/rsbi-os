@@ -85,8 +85,7 @@ public class TableService extends BaseCompService {
 		//移除kpiOther
 		table.getCols().remove(table.getCols().size() - 1);
 		//设置ID
-		String id = ExtConstants.reportIdPrefix + IdCreater.create();
-		cr.setId(id);
+		cr.setId(table.getCompId());
 		cr.setOut("olapJson");
 		cr.setHasPms(true);  //包含多维分析的参数
 

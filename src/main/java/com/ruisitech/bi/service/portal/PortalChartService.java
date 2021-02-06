@@ -77,7 +77,7 @@ public class PortalChartService extends BaseCompService {
 		ChartContext cr = this.json2Chart(chart, chart.getId(), false);
 		
 		//重新设置chartId
-		cr.setId("C"+chart.getId());
+		cr.setId(chart.getId());
 		
 		String sql = createSql(chart, 0);
 		GridDataCenterContext dc = chartService.createDataCenter(chart.getChartJson(), sql);

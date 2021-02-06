@@ -1,5 +1,6 @@
 package com.ruisitech.bi.web.bireport;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rsbi.ext.engine.view.context.ExtContext;
 import com.rsbi.ext.engine.view.context.MVContext;
@@ -32,7 +33,7 @@ public class TableController extends BaseController {
 	@RequestMapping(value="/TableView.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object tableView(@RequestBody TableQueryDto tableJson, HttpServletRequest req, HttpServletResponse res) throws Exception {
-
+		tableJson.setCompId("t1");
 		ExtContext.getInstance().removeMV(TableService.deftMvId);
 		MVContext mv = tableService.json2MV(tableJson);
 		try {
@@ -41,6 +42,7 @@ public class TableController extends BaseController {
 			ser.initPreview();
 			String ret = ser.buildMV(mv, req.getServletContext());
 			JSONObject json = JSONObject.parseObject(ret);
+			json = json.getJSONObject(tableJson.getCompId());
 			if(json.get("result") != null && json.getInteger("result") == 500){
 				return super.buildError(json.getString("msg"));
 			}

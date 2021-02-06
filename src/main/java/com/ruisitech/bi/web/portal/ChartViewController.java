@@ -1,5 +1,6 @@
 package com.ruisitech.bi.web.portal;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rsbi.ext.engine.view.context.ExtContext;
 import com.rsbi.ext.engine.view.context.MVContext;
@@ -41,6 +42,7 @@ public class ChartViewController extends BaseController {
 			ser.initPreview();
 			String ret = ser.buildMV(mv, req.getServletContext());
 			JSONObject obj = JSONObject.parseObject(ret);
+			obj = obj.getJSONObject(chartJson.getId());
 			if(obj.get("result") != null && obj.getInteger("result") == 500){
 				return super.buildError(obj.getString("msg"));
 			}

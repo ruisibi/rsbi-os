@@ -170,32 +170,15 @@ public class PortalPageService extends BaseCompService {
 	
 	//解析布局器
 	public void parserBody(JSONObject body, MVContext mv, Object param, boolean release) throws Exception{
-		TableContext tab = new TableContextImpl();
-		tab.setStyleClass("r_layout");
-		tab.setChildren(new ArrayList<Element>());
-		mv.getChildren().add(tab);
-		tab.setParent(mv);
 		for(int i=1; true; i++){
 			Object tmp = body.get("tr" + i);
 			if(tmp == null){
 				break;
 			}
 			JSONArray trs = (JSONArray)tmp;
-			TrContext tabTr = new TrContextImpl();
-			tabTr.setChildren(new ArrayList<Element>());
-			tab.getChildren().add(tabTr);
-			tabTr.setParent(tab);
 			for(int j=0; j<trs.size(); j++){
 				JSONObject td = trs.getJSONObject(j);
-				TdContext tabTd = new TdContextImpl();
-				tabTd.setStyleClass("layouttd");
-				tabTd.setChildren(new ArrayList<Element>());
-				tabTd.setParent(tabTr);
-				tabTr.getChildren().add(tabTd);
-				tabTd.setColspan(String.valueOf(td.getIntValue("colspan")));
-				tabTd.setRowspan(String.valueOf(td.getIntValue("rowspan")));
-				tabTd.setWidth(td.getIntValue("width") + "%");
-				
+
 				Object cldTmp = td.get("children");
 				
 				if(cldTmp != null){
@@ -204,70 +187,21 @@ public class PortalPageService extends BaseCompService {
 						JSONObject comp = children.getJSONObject(k);
 						String tp = comp.getString("type");
 						
-						//生成外层div
-						DivContext div = new DivContextImpl(); //外层div
-						div.setStyleClass("ibox");
-						div.setChildren(new ArrayList<Element>());
-						tabTd.getChildren().add(div);
-						div.setParent(tabTd);
-						
-						//判断组件是否是TD中最后一个，如果是，不要 margin-bottom 样式
-						if(k == children.size() - 1){
-							div.setStyle("margin-bottom:auto;");
-						}
-						div.setStyle((div.getStyle() == null ? "" : div.getStyle()) + "border:none;margin-bottom:10px;");  //去除div边框
-						
-						//判断是否生成title
-						String showtitle = (String)comp.get("showtitle");
-						if((showtitle != null && "false".equalsIgnoreCase(showtitle))
-								//数据框默认不生成title
-								|| tp.equals("box") ){   //不生成head
-							
-						}else{   //生成head
-							DivContext head = new DivContextImpl(); //内层head Div
-							head.setChildren(new ArrayList<Element>());
-							head.setStyleClass("ibox-title-view");
-							div.getChildren().add(head);
-							head.setParent(div);
-							
-							TextContext text = new TextContextImpl(); //head Div 的文字
-							text.setText(comp.getString("name"));
-							TextProperty ctp = new TextProperty();
-							ctp.setAlign("center");
-							ctp.setWeight("bold");
-							text.setTextProperty(ctp);
-							head.getChildren().add(text);
-							text.setParent(head);
-						}
-						
-						DivContext content = new DivContextImpl(); //内层content Div
-						content.setStyleClass("ibox-content");
-						content.setStyle("border-top:none; padding:3px;");
-						
-						//组件背景色 
-						String bgcolor = (String)comp.get("bgcolor");
-						if(bgcolor != null && bgcolor.length() > 0){
-							content.setStyle((content.getStyle() == null ? "" : content.getStyle())  + "background-color:"+bgcolor+";");
-						}
-						
-						content.setChildren(new ArrayList<Element>());
-						div.getChildren().add(content);
-						content.setParent(div);
-						
 						if(tp.equals("text")){
-							this.createText(content, comp);
+							//text 组件不用后端处理
+							//this.createText(mv, comp);
 						}else if(tp.equals("chart")){
 							PortalChartQuery chart = JSONObject.toJavaObject(comp, PortalChartQuery.class);
-							this.createChart(mv, content, chart, release);
+							this.createChart(mv, mv, chart, release);
 						}else if(tp.equals("table")){
 							PortalTableQuery table = JSONObject.toJavaObject(comp, PortalTableQuery.class);
-							this.crtTable(mv, content, table, release);
+							this.crtTable(mv, mv, table, release);
 						}else if(tp.equals("grid")){
 							GridQuery grid = JSONObject.toJavaObject(comp, GridQuery.class);
-							this.crtGrid(mv, content, grid, release);
+							this.crtGrid(mv, mv, grid, release);
 						}else if(tp.equals("box")){
 							BoxQuery ncomp = JSONObject.toJavaObject(comp, BoxQuery.class);
-							this.createBox(mv, content, ncomp);
+							this.createBox(mv, mv, ncomp);
 						}
 					}
 				}
@@ -364,13 +298,13 @@ public class PortalPageService extends BaseCompService {
 			}
 			input.setId(id);
 			input.setDesc(desc);
-			String size = (String)param.get("size");
-			if(size != null && size.length() > 0){
+			Integer size = param.getInteger("size");
+			if(size != null){
 				if("radio".equals(type)){
 					//select 框就是 radio,他的size表示像素，转换成实际size
-					input.setSize(String.valueOf(Integer.parseInt(size) * 8));
+					input.setSize(String.valueOf(size * 8));
 				}else{
-					input.setSize(size);
+					input.setSize(String.valueOf(size));
 				}
 			}
 			if(def != null && def.length() > 0){
@@ -548,7 +482,7 @@ public class PortalPageService extends BaseCompService {
 		}
 
 		ChartContext cr = chartService.json2Chart(chart, chart.getId(), false);
-		cr.setId("C" + IdCreater.create());
+		cr.setId(chart.getId());
 		//删除action (设置系列颜色事件)
 		for(int i=0; i<cr.getProperties().size(); i++){
 			ChartKeyContext p = cr.getProperties().get(i);
@@ -622,7 +556,7 @@ public class PortalPageService extends BaseCompService {
 		//创建corssReport
 		GridReportContext cr = gridSerivce.json2Grid(grid);
 		//设置ID
-		cr.setId("g_" + grid.getId());
+		cr.setId(grid.getId());
 		cr.setRefDsource(grid.getDsid());
 		
 		//创建数据sql
@@ -681,8 +615,7 @@ public class PortalPageService extends BaseCompService {
 			cols.remove(cols.size() - 1);
 		}
 	
-		String id = ExtConstants.reportIdPrefix + IdCreater.create();
-		cr.setId(id);
+		cr.setId(table.getId());
 		cr.setOut("lockUI");
 		cr.setShowData(true);
 		if(mybaseKpi != null){

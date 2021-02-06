@@ -12,9 +12,11 @@ import com.rsbi.ext.engine.view.emitter.text.TextEmitter;
 import com.rsbi.ext.engine.view.emitter.word.WordEmitter;
 import com.ruisitech.bi.service.portal.PortalPageService;
 import com.ruisitech.bi.service.portal.PortalService;
+import com.ruisitech.bi.util.BaseController;
 import com.ruisitech.bi.util.CompPreviewService;
 import com.ruisitech.bi.util.RSBIUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -28,8 +30,10 @@ import java.io.InputStream;
 @Controller
 @Scope("prototype")
 @RequestMapping(value = "/portal")
-public class PortalViewController {
-	
+public class PortalViewController extends BaseController {
+
+	private static Logger logger = Logger.getLogger(PortalViewController.class);
+
 	@Autowired
 	private PortalService portalService;
 	
@@ -41,17 +45,32 @@ public class PortalViewController {
     Object view(String pageId, HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String cfg = portalService.getPortalCfg(pageId);
 		if(cfg == null){
-			return "找不到报表文件。";
+			return super.buildError("找不到报表文件。");
 		}
-		JSONObject json = (JSONObject)JSON.parse(cfg);
-		String id = json.getString("id");
-		ExtContext.getInstance().removeMV("mv_" + id);
-		MVContext mv = pageService.json2MV(json, false, false);
-		CompPreviewService ser = new CompPreviewService(req, res, req.getServletContext());
-		ser.setParams(pageService.getMvParams());
-		ser.initPreview();
-		String ret = ser.buildMV(mv, req.getServletContext());
-		return ret;
+		try {
+			JSONObject json = (JSONObject)JSON.parse(cfg);
+			logger.info(json.toJSONString());
+			String id = json.getString("id");
+			ExtContext.getInstance().removeMV("mv_" + id);
+			MVContext mv = pageService.json2MV(json, false, false);
+			CompPreviewService ser = new CompPreviewService(req, res, req.getServletContext());
+			ser.setParams(pageService.getMvParams());
+			ser.initPreview();
+			String ret = ser.buildMV(mv, req.getServletContext());
+			Object obj = JSON.parse(ret);
+			if(obj instanceof JSONObject){
+				JSONObject rjson = (JSONObject)obj;
+				if (rjson.get("result") != null && rjson.getInteger("result") == 500) {
+					return super.buildError(rjson.getString("msg"));
+				}
+				return super.buildSucces(rjson);
+			}else {
+				return super.buildSucces(obj);
+			}
+		}catch (Exception ex){
+			logger.error("报表展现错误", ex);
+			return super.buildError(ex.getMessage());
+		}
 	}
 	
 	@RequestMapping(value="/export.action")

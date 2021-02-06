@@ -68,8 +68,7 @@ public class GridService extends BaseCompService {
 		//创建corssReport
 		GridReportContext cr = json2Grid(grid);
 		//设置ID
-		String id = ExtConstants.reportIdPrefix + IdCreater.create();
-		cr.setId(id);
+		cr.setId(grid.getId());
 		
 		//创建数据sql
 		String sql = this.createSql(grid);
@@ -95,6 +94,7 @@ public class GridService extends BaseCompService {
 		GridReportContext grid = new GridReportContextImpl();
 		Integer height = gridJson.getHeight();
 		grid.setOut("lockUI");
+		grid.setId(gridJson.getId());
 		if(height != null){
 			grid.setHeight(String.valueOf(height));
 		}
