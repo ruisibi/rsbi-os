@@ -8,7 +8,6 @@ import com.rsbi.ext.engine.ExtConstants;
 import com.rsbi.ext.engine.init.TemplateManager;
 import com.rsbi.ext.engine.util.IdCreater;
 import com.rsbi.ext.engine.view.context.Element;
-import com.rsbi.ext.engine.view.context.ExtContext;
 import com.rsbi.ext.engine.view.context.MVContext;
 import com.rsbi.ext.engine.view.context.MVContextImpl;
 import com.rsbi.ext.engine.view.context.cross.BaseKpiField;
@@ -20,7 +19,6 @@ import com.rsbi.ext.engine.view.context.face.OptionsLoader;
 import com.rsbi.ext.engine.view.context.form.*;
 import com.rsbi.ext.engine.view.context.gridreport.GridReportContext;
 import com.rsbi.ext.engine.view.context.html.*;
-import com.rsbi.ext.engine.view.context.html.table.*;
 import com.rsbi.ext.engine.view.exception.ExtConfigException;
 import com.ruisitech.bi.entity.bireport.DimDto;
 import com.ruisitech.bi.entity.bireport.KpiDto;
@@ -48,7 +46,6 @@ public class PortalPageService extends BaseCompService {
 	public final static String deftMvId = "mv.portal.tmp";
 	
 	private Map<String, InputField> mvParams = new HashMap<String, InputField>(); //mv的参数
-	private StringBuffer css = new StringBuffer(); //在创建页面过程中生成所需要的组件样式文件
 	private StringBuffer scripts = new StringBuffer();
 	private List<String> dsids = new ArrayList<String>(); //用到的数据原
 	
@@ -88,67 +85,19 @@ public class PortalPageService extends BaseCompService {
 		String mvId = pageJson.getString("id");  //用报表ID做MV得ID，防止报表串表
 		mv.setMvid("mv_" + mvId);
 		
-		IncludeContext inc = new IncludeContextImpl();
-		String stylename = (String)pageJson.get("stylename");
-		if(stylename != null && stylename.length() > 0 && !"def".equals(stylename)){
-			inc.setPage("/resource/css/portal-inc-"+stylename+".css");
-		}else{
-			inc.setPage("/resource/css/portal-inc.css");
-		}
-		mv.getChildren().add(inc);
-		inc.setParent(mv);
-		
 		//解析参数
 		Object param = pageJson.get("params");
 		if(param != null && ((JSONArray)param).size()>0){
 			DivContext outdiv = new DivContextImpl();
-			outdiv.setStyleClass("ibox reportParams");
-			outdiv.setStyle("margin:5px;");
-			outdiv.setChildren(new ArrayList<Element>());
+			outdiv.setChildren(new ArrayList<>());
 			outdiv.setParent(mv);
 			mv.getChildren().add(outdiv);
-			
-			//row div
-			DivContext rows = new DivContextImpl();
-			rows.setStyleClass("row");
-			rows.setChildren(new ArrayList<Element>());
-			outdiv.getChildren().add(rows);
-			rows.setParent(outdiv);
-			
-			
-			DivContext div = new DivContextImpl();
-			div.setStyleClass("ibox-content");
-			div.setStyle("padding:5px;border:none;");
-			div.setParent(rows);
-			div.setChildren(new ArrayList<Element>());
-			rows.getChildren().add(div);
-			
+
 			JSONArray pp = (JSONArray)param;
 			for(int i=0; i<pp.size(); i++){
-				this.parserParam(pp.getJSONObject(i), div, mv, release?false:true);
+				this.parserParam(pp.getJSONObject(i), outdiv, mv, release?false:true);
 			}
 
-			//创建提交按钮
-			DivContext btndiv = new DivContextImpl();
-			btndiv.setStyleClass("col-sm-3");
-			btndiv.setChildren(new ArrayList<Element>());
-			div.getChildren().add(btndiv);
-			btndiv.setParent(div);
-			
-			ButtonContext btn = new ButtonContextImpl();
-			btn.setDesc("查询");
-			btn.setType("button");
-			btn.setMvId(new String[]{mv.getMvid()});
-			btndiv.getChildren().add(btn);
-			btn.setParent(btndiv);
-			//清除按钮
-			ButtonContext clearBtn = new ButtonContextImpl();
-			clearBtn.setDesc("清除");
-			clearBtn.setType("button");
-			clearBtn.setOnClick("clear_params");
-			clearBtn.setStyleClass("btn btn-success btn-sm");
-			btndiv.getChildren().add(clearBtn);
-			clearBtn.setParent(btndiv);
 		}
 		
 		JSONObject body = pageJson.getJSONObject("body");
@@ -156,11 +105,6 @@ public class PortalPageService extends BaseCompService {
 		chartService.setPageBody(body);
 		tableService.setPageBody(body);
 		parserBody(body, mv, param, release);
-		//生成样式
-		TextContext csstext = new TextContextImpl();
-		csstext.setText("<style>" + this.css.toString() + "</style>");
-		mv.getChildren().add(csstext);
-		csstext.setParent(mv);
 		//生成数据原
 		for(String dsid : dsids){
 			createDsource(this.cacheService.getDsource(dsid), mv);
@@ -424,51 +368,7 @@ public class PortalPageService extends BaseCompService {
 			this.dsids.add(compJson.getDsid());
 		}
 	}
-	
-	public void createText(Element td, JSONObject compJson){
-		TextContext text = new TextContextImpl();
-		JSONObject style = (JSONObject)compJson.get("style");
-		TextProperty tp = new TextProperty();
-		Integer height = compJson.getInteger("height");
-		if(height != null){
-			tp.setHeight(String.valueOf(height));
-		}
-		if(style != null && !style.isEmpty()){
-			tp.setAlign((String)style.get("talign"));
-			tp.setSize((String)style.get("tfontsize"));
-			String fontweight = (String)style.get("tfontweight");
-			tp.setWeight("true".equals(fontweight)?"bold":"normal");
-			tp.setColor((String)style.get("tfontcolor"));
-			tp.setId("C"+ IdCreater.create());
-			
-			
-			css.append("#"+tp.getId()+"{");
-			String italic = (String)style.get("titalic");
-			String underscore = (String)style.get("tunderscore");
-			String lineheight = (String)style.get("tlineheight");
-			String tbgcolor = (String)style.get("tbgcolor");
-			if("true".equals(italic)){
-				css.append("font-style:italic;");
-			}
-			if("true".equals(underscore)){
-				css.append("text-decoration: underline;");
-			}
-			if(lineheight != null && lineheight.length() > 0){
-				css.append("line-height:"+lineheight+"px;");
-			}
-			if(tbgcolor != null && tbgcolor.length() > 0){
-				css.append("background-color:"+tbgcolor+";");
-			}
-			css.append("}");
-		}
-		text.setTextProperty(tp);
-		String desc = compJson.getString("desc");
-		text.setText(desc);
-		text.setParent(td);
-		text.setFormatEnter(true);
-		td.getChildren().add(text);
-	}
-	
+
 	public void createChart(MVContext mv, Element tabTd, PortalChartQuery chart, boolean release) throws Exception{
 		if(chart.getChartJson() == null){
 			return;
