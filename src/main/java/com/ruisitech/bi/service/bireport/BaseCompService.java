@@ -210,9 +210,7 @@ public abstract class BaseCompService {
 				target.setValue(defvalue);
 				target.setType("hidden");
 				mvParams.put(target.getId(), target);
-				mv.getMvParams().put(target.getId(), target);
-				
-				
+				mv.setMvParam(target.getId(), target);
 				mv.getChildren().add(target);
 				target.setParent(mv);
 			}

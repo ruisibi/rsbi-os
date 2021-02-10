@@ -57,16 +57,12 @@ public class PortalViewController extends BaseController {
 			ser.setParams(pageService.getMvParams());
 			ser.initPreview();
 			String ret = ser.buildMV(mv, req.getServletContext());
-			Object obj = JSON.parse(ret);
-			if(obj instanceof JSONObject){
-				JSONObject rjson = (JSONObject)obj;
-				if (rjson.get("result") != null && rjson.getInteger("result") == 500) {
-					return super.buildError(rjson.getString("msg"));
-				}
-				return super.buildSucces(rjson);
-			}else {
-				return super.buildSucces(obj);
+			JSONObject rjson = JSONObject.parseObject(ret);
+			if (rjson.get("result") != null && rjson.getInteger("result") == 500) {
+				return super.buildError(rjson.getString("msg"));
 			}
+			return super.buildSucces(rjson);
+
 		}catch (Exception ex){
 			logger.error("报表展现错误", ex);
 			return super.buildError(ex.getMessage());

@@ -47,10 +47,10 @@ public class ChartController extends BaseController  {
 			ser.initPreview();
 			String ret = ser.buildMV(mv, req.getServletContext());
 			JSONObject obj = JSONObject.parseObject(ret);
-			obj = obj.getJSONObject(chartJson.getId());
 			if(obj.get("result") != null && obj.getInteger("result") == 500){
 				return super.buildError(obj.getString("msg"));
 			}
+			obj = obj.getJSONObject(chartJson.getId());
 			return super.buildSucces(obj);
 		}catch (Exception ex){
 			logger.error("图形展现出错", ex);

@@ -42,12 +42,11 @@ public class BoxViewController extends BaseController {
 			ser.initPreview();
 			String ret = ser.buildMV(mv, req.getServletContext());
 			JSONObject json = JSONObject.parseObject(ret);
-			json = json.getJSONObject(box.getId());
 			if (json.get("result") != null && json.getInteger("result") == 500) {
 				return super.buildError(json.getString("msg"));
 			}
+			json = json.getJSONObject(box.getId());
 			return super.buildSucces(json);
-
 		}catch (Exception ex){
 			logger.error("数据块展现出错", ex);
 			return super.buildError(ex.getMessage());
