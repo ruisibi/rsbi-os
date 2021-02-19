@@ -80,6 +80,8 @@ public class DatasetService {
 			}
 		}
 		if(addList.size() == 0){
+			//删除缓存
+			cacheService.removeDset(dsetId);
 			return;
 		}
 		for(DSColumn col : addList){
@@ -90,6 +92,8 @@ public class DatasetService {
 		ds.setDsetId(dsetId);
 		ds.setCfg(newCfg);
 		mapper.updateDsetCfg(ds);
+		//删除缓存
+		cacheService.removeDset(ds.getDsetId());
 	}
 	
 	private boolean existCol(String colName, JSONArray cols){

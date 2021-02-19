@@ -49,7 +49,6 @@ public class PortalViewController extends BaseController {
 		}
 		try {
 			JSONObject json = (JSONObject)JSON.parse(cfg);
-			logger.info(json.toJSONString());
 			String id = json.getString("id");
 			ExtContext.getInstance().removeMV("mv_" + id);
 			MVContext mv = pageService.json2MV(json, false, false);
