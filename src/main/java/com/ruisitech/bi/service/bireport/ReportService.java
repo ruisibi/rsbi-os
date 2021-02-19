@@ -207,8 +207,7 @@ public class ReportService extends BaseCompService {
 		CrossReportContext cr = tableService.json2Table(table);
 		//移除kpiOther
 		table.getCols().remove(table.getCols().size() - 1);
-		String id = ExtConstants.reportIdPrefix + IdCreater.create();
-		cr.setId(id);
+		cr.setId("comp");
 		cr.setOut("html");
 		cr.setShowData(true);
 		
@@ -255,7 +254,7 @@ public class ReportService extends BaseCompService {
 			txt.setParent(mv);
 		}
 		ChartContext cr = chartService.json2Chart(chart, false);
-		
+		cr.setId("comp");
 		String sql = chartService.createSql(chart, release);
 		GridDataCenterContext dc = chartService.createDataCenter(chart.getChartJson(), sql);
 		cr.setRefDataCenter(dc.getId());
