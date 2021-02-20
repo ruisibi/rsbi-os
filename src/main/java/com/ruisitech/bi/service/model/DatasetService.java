@@ -3,12 +3,15 @@ package com.ruisitech.bi.service.model;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rsbi.ext.engine.view.builder.dsource.DataSourceBuilder;
+import com.rsbi.ispire.dc.cube.DataSet;
 import com.ruisitech.bi.entity.common.DSColumn;
 import com.ruisitech.bi.entity.model.DataSource;
 import com.ruisitech.bi.entity.model.Dataset;
 import com.ruisitech.bi.mapper.model.DatasetMapper;
 import com.ruisitech.bi.mapper.model.DimensionMapper;
 import com.ruisitech.bi.service.bireport.ModelCacheService;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -293,6 +296,95 @@ public class DatasetService {
 			e.printStackTrace();
 			throw new RuntimeException("sql 执行报错.");
 		}finally{
+			if(conn != null){
+				conn.close();
+			}
+		}
+	}
+
+	/**
+	 * 查询数据集数据
+	 * @param dsetId
+	 * @param dsid
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> queryDsetDatas(String dsid, String dsetId) throws Exception{
+		JSONObject dataset = JSONObject.parseObject(this.getDatasetCfg(dsetId));
+		DataSource ds = this.dsService.getDataSource(dsid);
+		List<String> tables = new ArrayList<String>();
+		//需要进行关联的表
+		JSONArray joinTabs = (JSONArray)dataset.get("joininfo");
+		//生成sql
+		StringBuffer sb = new StringBuffer("select a0.* ");
+
+		List<String> tabs = new ArrayList<>(); //需要进行关联的表，从joininfo中获取，剔除重复的表
+		for(int i=0; joinTabs!=null&&i<joinTabs.size(); i++){
+			JSONObject join = joinTabs.getJSONObject(i);
+			String ref = join.getString("ref");
+			if(!tabs.contains(ref)){
+				tabs.add(ref);
+			}
+		}
+
+		for(int i=0; i<tabs.size(); i++){
+			sb.append(", a"+(i+1)+".* ");
+		}
+		sb.append("from ");
+		String master = dataset.getString("master");
+		sb.append( master + " a0 ");
+		tables.add(dataset.getString("master"));
+		for(int i=0; i<tabs.size(); i++){
+			String tab = tabs.get(i);
+			sb.append(", " +tab);
+			sb.append(" a"+(i+1)+" ");
+			tables.add(tab);
+		}
+		sb.append("where 1=1 ");
+		for(int i=0; i<tabs.size(); i++){
+			String tab = tabs.get(i);
+			List<JSONObject> refs = getJoinInfoByTname(tab, joinTabs);
+			for(int k=0; k<refs.size(); k++){
+				JSONObject t = refs.get(k);
+				sb.append("and a0."+t.getString("col")+"=a"+(i+1)+"."+t.getString("refKey"));
+				sb.append(" ");
+			}
+		}
+		Map<String, Object> ret = new HashMap<>();
+		List<Map<String, Object>> datas = new ArrayList<>();
+		List<String> heads = new ArrayList<>();
+		Connection conn  = null;
+		PreparedStatement ps = null;
+		try {
+			if(ds.getUse().equals("jndi")){
+				conn = this.dsService.getJndi(ds);
+			}else if(ds.getUse().equals("jdbc")){
+				conn = this.dsService.getJDBC(ds);
+			}
+			ps = conn.prepareStatement(sb.toString());
+			ps.setMaxRows(100);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData meta = rs.getMetaData();
+			for(int i=0; i<meta.getColumnCount(); i++){
+				String name = meta.getColumnName(i+1);
+				heads.add(name.toLowerCase());
+			}
+			while(rs.next()){
+				Map<String, Object> dt = new CaseInsensitiveMap<>();
+				for(String col : heads){
+					Object val = DataSourceBuilder.getResultSetValue(rs, col);
+					dt.put(col, val);
+				}
+				datas.add(dt);
+			}
+			rs.close();
+			ret.put("header", heads);
+			ret.put("datas", datas);
+			return ret;
+		}finally{
+			if(ps != null){
+				ps.close();
+			}
 			if(conn != null){
 				conn.close();
 			}
