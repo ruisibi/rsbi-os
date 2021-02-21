@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruisitech.bi.mapper.portal.ShareUrlMapper" >
+  <resultMap id="BaseResultMap" type="com.ruisitech.bi.entity.portal.ShareUrl" >
+    <id column="token" property="token" />
+    <result column="islogin" property="islogin" />
+    <result column="yxq" property="yxq" />
+    <result column="crtdate" property="crtdate" />
+    <result column="report_id" property="reportId" />
+    <result column="crt_user" property="crtUser" />
+    <result column="r_type" property="rType" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    token, islogin, yxq,crtdate,report_id,crt_user, r_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from report_share_url
+    where token = #{token}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from report_share_url
+    where token = #{token}
+  </delete>
+ 
+  <insert id="insert" parameterType="com.ruisitech.bi.entity.portal.ShareUrl" >
+    insert into report_share_url
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="token != null" >
+        token,
+      </if>
+      <if test="islogin != null" >
+        islogin,
+      </if>
+      <if test="yxq != null" >
+        yxq,
+      </if>
+       <if test="reportId != null" >
+        report_id,
+      </if>
+      <if test="rType != null" >
+        r_type,
+      </if>
+      crt_user,
+      crtdate,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="token != null" >
+        #{token},
+      </if>
+      <if test="islogin != null" >
+        #{islogin},
+      </if>
+      <if test="yxq != null" >
+        #{yxq},
+      </if>
+      <if test="reportId != null" >
+        #{reportId},
+      </if>
+      <if test="rType != null" >
+        #{rType},
+      </if>
+      #{crtUser},
+  		<if test="dbName == 'mysql'">
+    	now()
+    	</if> 
+    	<if test="dbName == 'oracle'">
+    	sysdate
+    	</if> 
+    	<if test="dbName == 'sqlser'">
+    	getdate()
+    	</if> 
+    	<if test="dbName == 'db2'">
+    	current timestamp
+    	</if> 
+    	<if test="dbName == 'psql'">
+    		current_timestamp
+    	</if> 
+    	,
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.ruisitech.bi.entity.portal.ShareUrl" >
+    update report_share_url
+    <set >
+      <if test="islogin != null" >
+        islogin = #{islogin},
+      </if>
+      <if test="yxq != null" >
+        yxq = #{yxq},
+      </if>
+      <if test="reportId != null" >
+        report_id = #{reportId},
+      </if>
+       <if test="crtUser != null" >
+        crt_user = #{crtUser},
+      </if>
+    </set>
+    where token = #{token}
+  </update>
+</mapper>

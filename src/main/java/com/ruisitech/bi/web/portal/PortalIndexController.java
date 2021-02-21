@@ -36,6 +36,9 @@ public class PortalIndexController extends BaseController {
 	public @ResponseBody
 	Object get(String pageId) {
 		String str = portalService.getPortalCfg(pageId);
+		if(str == null){
+			return this.buildError("报表不存在");
+		}
 		return this.buildSucces(str);
 	}
 
