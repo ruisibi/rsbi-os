@@ -6,7 +6,9 @@ import com.github.pagehelper.PageInfo;
 import com.ruisitech.bi.entity.common.PageParam;
 import com.ruisitech.bi.entity.frame.User;
 import com.ruisitech.bi.entity.portal.Portal;
+import com.ruisitech.bi.entity.portal.ShareUrl;
 import com.ruisitech.bi.service.portal.PortalService;
+import com.ruisitech.bi.service.portal.ShareUrlService;
 import com.ruisitech.bi.util.BaseController;
 import com.ruisitech.bi.util.RSBIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class PortalIndexController extends BaseController {
 	
 	@Autowired
 	private PortalService portalService;
+
+	@Autowired
+	private ShareUrlService urlService;
 	
 	@RequestMapping(value="/delete.action")
 	public @ResponseBody
@@ -36,6 +41,17 @@ public class PortalIndexController extends BaseController {
 	public @ResponseBody
 	Object get(String pageId) {
 		String str = portalService.getPortalCfg(pageId);
+		if(str == null){
+			return this.buildError("报表不存在");
+		}
+		return this.buildSucces(str);
+	}
+
+	@RequestMapping(value="/share/get.action")
+	public @ResponseBody
+	Object shareGet(String token) {
+		ShareUrl url = urlService.getByToken(token);
+		String str = portalService.getPortalCfg(url.getReportId());
 		if(str == null){
 			return this.buildError("报表不存在");
 		}

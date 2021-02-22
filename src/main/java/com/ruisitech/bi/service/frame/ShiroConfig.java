@@ -5,6 +5,7 @@
  */
 package com.ruisitech.bi.service.frame;
 
+import com.ruisitech.bi.service.portal.ShareUrlService;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class ShiroConfig {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ShareUrlService shareUrlService;
+
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -38,12 +42,16 @@ public class ShiroConfig {
         //拦截器
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("authc", new SessionAuthcFilter(userService));
+        filters.put("shareAuthc", new ShareAuthcFilter(shareUrlService));
         shiroFilterFactoryBean.setFilters(filters);
         //注销
         shiroFilterFactoryBean.setLoginUrl("/frame/Logout.action");
         //过滤的URL
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/doLogin.action", "anon");
+        filterChainDefinitionMap.put("/control/extControl", "anon");
+        filterChainDefinitionMap.put("/portal/share/**", "shareAuthc");  //报表分享后的URL不用登录
+        filterChainDefinitionMap.put("/control/extShare", "shareAuthc");
         filterChainDefinitionMap.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;

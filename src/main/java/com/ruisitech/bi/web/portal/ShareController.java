@@ -38,7 +38,7 @@ public class ShareController extends BaseController {
     Object copyUrl(ShareUrl dto) {
 		dto.setrType(1);
 		urlService.saveShareUrl(dto);
-		return super.buildSucces();
+		return super.buildSucces(dto.getToken());
 	}
 
 }

@@ -10,8 +10,10 @@ import com.rsbi.ext.engine.view.emitter.excel.ExcelEmitter;
 import com.rsbi.ext.engine.view.emitter.pdf.PdfEmitter;
 import com.rsbi.ext.engine.view.emitter.text.TextEmitter;
 import com.rsbi.ext.engine.view.emitter.word.WordEmitter;
+import com.ruisitech.bi.entity.portal.ShareUrl;
 import com.ruisitech.bi.service.portal.PortalPageService;
 import com.ruisitech.bi.service.portal.PortalService;
+import com.ruisitech.bi.service.portal.ShareUrlService;
 import com.ruisitech.bi.util.BaseController;
 import com.ruisitech.bi.util.CompPreviewService;
 import com.ruisitech.bi.util.RSBIUtils;
@@ -40,9 +42,12 @@ public class PortalViewController extends BaseController {
 	@Autowired
 	private PortalPageService pageService;
 
+	@Autowired
+	private ShareUrlService urlService;
+
 	@RequestMapping(value="/view.action")
 	public @ResponseBody
-    Object view(String pageId, HttpServletRequest req, HttpServletResponse res) throws Exception {
+    Object view(String pageId, HttpServletRequest req, HttpServletResponse res) {
 		String cfg = portalService.getPortalCfg(pageId);
 		if(cfg == null){
 			return super.buildError("找不到报表文件。");
@@ -66,6 +71,13 @@ public class PortalViewController extends BaseController {
 			logger.error("报表展现错误", ex);
 			return super.buildError(ex.getMessage());
 		}
+	}
+
+	@RequestMapping(value="/share/view.action")
+	public @ResponseBody
+	Object shareView(String token, HttpServletRequest req, HttpServletResponse res) {
+		ShareUrl url = urlService.getByToken(token);
+		return this.view(url.getReportId(), req, res);
 	}
 	
 	@RequestMapping(value="/export.action")
