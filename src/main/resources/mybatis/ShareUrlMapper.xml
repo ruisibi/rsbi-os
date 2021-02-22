@@ -62,21 +62,12 @@
         #{rType},
       </if>
       #{crtUser},
-  		<if test="dbName == 'mysql'">
-    	now()
-    	</if> 
-    	<if test="dbName == 'oracle'">
-    	sysdate
-    	</if> 
-    	<if test="dbName == 'sqlser'">
-    	getdate()
-    	</if> 
-    	<if test="dbName == 'db2'">
-    	current timestamp
-    	</if> 
-    	<if test="dbName == 'psql'">
-    		current_timestamp
-    	</if> 
+      <if test="dbName == 'mysql'">
+        now()
+      </if>
+      <if test="dbName == 'sqlite'">
+        strftime('%s','now') * 1000
+      </if>
     	,
     </trim>
   </insert>
