@@ -126,6 +126,14 @@ public class TableService extends BaseCompService {
 		CrossRows rows = new CrossRows();
 		rows.setRows(new ArrayList<CrossField>());
 		ctx.setCrossRows(rows);
+
+		//没有指标，添加baseKpi
+		if(table.getKpiJson() == null || table.getKpiJson().size() == 0){
+			CrossKpi baseKpi = new BaseKpiField();
+			baseKpi.setAggregation("sum");
+			baseKpi.setAlias("kpi_value");
+			ctx.setBaseKpi(baseKpi);
+		}
 		
 		ctx.setLabel(table.getCompId());  //给组件设置label
 		boolean uselink = false;
