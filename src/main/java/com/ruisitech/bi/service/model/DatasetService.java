@@ -10,8 +10,10 @@ import com.ruisitech.bi.entity.model.DataSource;
 import com.ruisitech.bi.entity.model.Dataset;
 import com.ruisitech.bi.mapper.model.DatasetMapper;
 import com.ruisitech.bi.mapper.model.DimensionMapper;
+import com.ruisitech.bi.service.bireport.BaseCompService;
 import com.ruisitech.bi.service.bireport.ModelCacheService;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class DatasetService {
+public class DatasetService extends BaseCompService {
 
 	@Autowired
 	private DatasetMapper mapper;
@@ -36,6 +38,8 @@ public class DatasetService {
 	
 	@Autowired
 	private DimensionMapper dimMapper;
+
+	private static Logger logger = Logger.getLogger(DatasetService.class);
 	
 	public List<Dataset> listDataset(){
 		return mapper.listDataset();
@@ -312,43 +316,32 @@ public class DatasetService {
 	public Map<String, Object> queryDsetDatas(String dsid, String dsetId) throws Exception{
 		JSONObject dataset = JSONObject.parseObject(this.getDatasetCfg(dsetId));
 		DataSource ds = this.dsService.getDataSource(dsid);
-		List<String> tables = new ArrayList<String>();
+		Map<String, String> tableAlias = createTableAlias(dataset);
 		//需要进行关联的表
 		JSONArray joinTabs = (JSONArray)dataset.get("joininfo");
 		//生成sql
-		StringBuffer sb = new StringBuffer("select a0.* ");
-
-		List<String> tabs = new ArrayList<>(); //需要进行关联的表，从joininfo中获取，剔除重复的表
-		for(int i=0; joinTabs!=null&&i<joinTabs.size(); i++){
-			JSONObject join = joinTabs.getJSONObject(i);
-			String ref = join.getString("ref");
-			if(!tabs.contains(ref)){
-				tabs.add(ref);
+		StringBuffer sb = new StringBuffer("select ");
+		for(Map.Entry<String, String> ent : tableAlias.entrySet()){
+			if(ent.getValue().equals("a0")){
+				continue;
 			}
+			sb.append( ent.getValue()+".*,");
 		}
+		sb.append("a0.*");
 
-		for(int i=0; i<tabs.size(); i++){
-			sb.append(", a"+(i+1)+".* ");
-		}
-		sb.append("from ");
 		String master = dataset.getString("master");
-		sb.append( master + " a0 ");
-		tables.add(dataset.getString("master"));
-		for(int i=0; i<tabs.size(); i++){
-			String tab = tabs.get(i);
-			sb.append(", " +tab);
-			sb.append(" a"+(i+1)+" ");
-			tables.add(tab);
-		}
-		sb.append("where 1=1 ");
-		for(int i=0; i<tabs.size(); i++){
-			String tab = tabs.get(i);
-			List<JSONObject> refs = getJoinInfoByTname(tab, joinTabs);
-			for(int k=0; k<refs.size(); k++){
-				JSONObject t = refs.get(k);
-				sb.append("and a0."+t.getString("col")+"=a"+(i+1)+"."+t.getString("refKey"));
-				sb.append(" ");
+		sb.append(" from " + master + " a0");
+		for(int i=0; joinTabs!=null&&i<joinTabs.size(); i++){  //通过主表关联
+			JSONObject tab = joinTabs.getJSONObject(i);
+			String ref = tab.getString("ref");
+			String refKey = tab.getString("refKey");
+			String jtype = (String)tab.get("jtype");
+			if("left".equals(jtype) || "right".equals(jtype)){
+				sb.append(" " + jtype);
 			}
+			sb.append(" join " + ref+ " " + tableAlias.get(ref));
+			sb.append(" on a0."+tab.getString("col")+"="+tableAlias.get(ref)+"."+refKey);
+			sb.append(" ");
 		}
 		Map<String, Object> ret = new HashMap<>();
 		List<Map<String, Object>> datas = new ArrayList<>();
@@ -361,13 +354,17 @@ public class DatasetService {
 			}else if(ds.getUse().equals("jdbc")){
 				conn = this.dsService.getJDBC(ds);
 			}
-			ps = conn.prepareStatement(sb.toString());
+			String sql = sb.toString();
+			logger.info(sql);
+			ps = conn.prepareStatement(sql);
 			ps.setMaxRows(100);
 			ResultSet rs = ps.executeQuery();
 			ResultSetMetaData meta = rs.getMetaData();
 			for(int i=0; i<meta.getColumnCount(); i++){
-				String name = meta.getColumnName(i+1);
-				heads.add(name.toLowerCase());
+				String name = meta.getColumnName(i+1).toLowerCase();
+				if(!heads.contains(name)) {
+					heads.add(name.toLowerCase());
+				}
 			}
 			while(rs.next()){
 				Map<String, Object> dt = new CaseInsensitiveMap<>();
