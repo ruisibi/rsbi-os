@@ -33,3 +33,4 @@ build/
 .vscode/
 .mvn
 /src/main/webapp/WEB-INF/ext-temp/
+/public/ext-temp/
