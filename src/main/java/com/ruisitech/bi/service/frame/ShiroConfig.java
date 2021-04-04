@@ -49,6 +49,7 @@ public class ShiroConfig {
         //过滤的URL
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/doLogin.action", "anon");
+        filterChainDefinitionMap.put("/chartjson/**", "anon");  //json文件不用登录
         filterChainDefinitionMap.put("/control/extControl", "anon");
         filterChainDefinitionMap.put("/portal/share/**", "shareAuthc");  //报表分享后的URL不用登录
         filterChainDefinitionMap.put("/control/extShare", "shareAuthc");
