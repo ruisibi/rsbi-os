@@ -16,7 +16,7 @@ spring:
 pagehelper:
   helperDialect: sqlite
 ```
-src/main/webapp/WEB-INF/ext2/ext-config/ext-config.xml文件:
+public/ext2/ext-config/ext-config.xml文件:
 ```xml
 <!--修改支撑库为sqlite -->
 <constant name="dbName" value="sqlite" />
@@ -31,7 +31,7 @@ spring:
     password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
-src/main/webapp/WEB-INF/ext2/ext-config/ext-config.xml文件:
+public/ext2/ext-config/ext-config.xml文件:
 ```xml
 <!--修改支撑库为mysql -->
 <constant name="dbName" value="mysql" />
