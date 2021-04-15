@@ -6,7 +6,7 @@
 	<constant name="closeFestival" value="true" />
 
 	<constant name="resPath" value="https://www.ruisitech.com/rsbi-ent" />
-	<constant name="xmlResource" value="/WEB-INF/ext2/ext-config/pages/" />
+	<constant name="xmlResource" value="/ext2/ext-config/pages/" />
 	<constant name="securityClass" value="com.ruisitech.ext.service.ExtLoginChecker"/>
 	<constant name="loginUserClass" value="com.ruisitech.ext.service.ExtLoginInfoLoader"/>
 	<constant name="fieldLoader" value="com.ruisitech.ext.service.MyCrossFieldLoader" />
