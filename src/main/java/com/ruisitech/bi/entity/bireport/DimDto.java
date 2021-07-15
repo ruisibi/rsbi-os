@@ -33,10 +33,8 @@ public class DimDto extends BaseEntity {
 	private String topType;
 	private String aggre;
 	private Integer filtertype;
-	private String startmt;
-	private String endmt;
-	private String startdt;
-	private String enddt;
+	private String st;
+	private String end;
 	private Integer cubeId;
 	private String xdispName;
 	private String tickInterval;
@@ -178,10 +176,10 @@ public class DimDto extends BaseEntity {
 	}
 	public QueryDayDto getDay() {
 		if(day == null){
-			if(startdt != null && startdt.length() > 0 && enddt != null && enddt.length() > 0){
+			if("day".equals(type)  && st != null && st.length() > 0 && end != null && end.length() > 0){
 				day = new QueryDayDto();
-				day.setStartDay(this.startdt);
-				day.setEndDay(this.enddt);
+				day.setStartDay(this.st);
+				day.setEndDay(this.end);
 			}
 		}
 		return day;
@@ -191,10 +189,10 @@ public class DimDto extends BaseEntity {
 	}
 	public QueryMonthDto getMonth() {
 		if(month == null){
-			if(startmt != null && startmt.length() > 0 && endmt != null && endmt.length() > 0){
+			if("month".equals(type)  && st != null && st.length() > 0 && end != null && end.length() > 0){
 				month = new QueryMonthDto();
-				month.setStartMonth(startmt);
-				month.setEndMonth(endmt);
+				month.setStartMonth(st);
+				month.setEndMonth(end);
 			}
 		}
 		return month;
@@ -226,30 +224,6 @@ public class DimDto extends BaseEntity {
 	public void setFiltertype(Integer filtertype) {
 		this.filtertype = filtertype;
 	}
-	public String getStartmt() {
-		return startmt;
-	}
-	public void setStartmt(String startmt) {
-		this.startmt = startmt;
-	}
-	public String getEndmt() {
-		return endmt;
-	}
-	public void setEndmt(String endmt) {
-		this.endmt = endmt;
-	}
-	public String getStartdt() {
-		return startdt;
-	}
-	public void setStartdt(String startdt) {
-		this.startdt = startdt;
-	}
-	public String getEnddt() {
-		return enddt;
-	}
-	public void setEnddt(String enddt) {
-		this.enddt = enddt;
-	}
 	public Integer getCubeId() {
 		return cubeId;
 	}
@@ -278,4 +252,20 @@ public class DimDto extends BaseEntity {
 	public void validate() {
 		 
 	 }
+
+	public String getSt() {
+		return st;
+	}
+
+	public void setSt(String st) {
+		this.st = st;
+	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public void setEnd(String end) {
+		this.end = end;
+	}
 }
