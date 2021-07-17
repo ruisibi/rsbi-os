@@ -20,6 +20,7 @@ import com.ruisitech.bi.entity.bireport.ChartQueryDto;
 import com.ruisitech.bi.entity.bireport.DimDto;
 import com.ruisitech.bi.entity.bireport.ParamDto;
 import com.ruisitech.bi.entity.bireport.TableQueryDto;
+import com.ruisitech.bi.util.RSBIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public class ReportService extends BaseCompService {
 	@Autowired
 	private TableService tableService;
 
+	Map<String, InputField> params = new HashMap<>();
+
 	public @PostConstruct void init() {
 		
 	}  
@@ -62,7 +65,7 @@ public class ReportService extends BaseCompService {
 		JSONArray ps = json.getJSONArray("params");
 		ParamDto[] ls = JSONArray.toJavaObject(ps, ParamDto[].class);
 		List<ParamDto> params = Arrays.asList(ls);
-		//构建参数Text
+		//构建参数
 		if(!ps.isEmpty()){
 			if(release == 0){
 				StringBuffer sb = new StringBuffer("参数： ");
@@ -72,59 +75,48 @@ public class ReportService extends BaseCompService {
 					String name = param.getName();
 					String type = param.getType();
 					//String colname = param.getString("colname");
-					if("frd".equals(type) || "year".equals(type) || "quarter".equals(type)){
-						sb.append(name + "(" + (param.getValStrs() == null ? "无" : param.getValStrs())+")");
-					}else if("month".equals(type) || "day".equals(type)){
+					if("month".equals(type) || "day".equals(type)){
 						sb.append(name + "(" + (param.getSt() == null ? "无" : param.getSt()) + " 至 " + (param.getEnd() == null ? "无" : param.getEnd()) + ")");
+					}else{
+						sb.append(name + "(" + (param.getValStrs() == null ? "无" : param.getValStrs())+")");
 					}
 					sb.append("  ");
-					
-					
 				}
 				parStr.setText(sb.toString());
 				mv.getChildren().add(parStr);
 				parStr.setParent(mv);
-			}else{
+			}else {
 				//把参数变成动态值
 				DivContext div = new DivContextImpl();
 				div.setStyleClass("rpeortParam");
 				div.setChildren(new ArrayList<Element>());
 				mv.getChildren().add(div);
 				div.setParent(mv);
-				for(int i=0; i<params.size(); i++){
-					ParamDto param =params.get(i);
+				for (int i = 0; i < params.size(); i++) {
+					ParamDto param = params.get(i);
 					String name = param.getName();
 					String type = param.getType();
 					String colname = param.getColname();
 					List<String> values = param.getVals();
-					
+
 					InputField input = null;
 					InputField input2 = null;
-					if("frd".equalsIgnoreCase(type) || "year".equalsIgnoreCase(type) || "quarter".equalsIgnoreCase(type)){
-						MultiSelectContextImpl target = new MultiSelectContextImpl();
-						String sql = this.createDimSql(param);
-						String template = TemplateManager.getInstance().createTemplate(sql);
-						target.setTemplateName(template);
-						input = target;
-						input.setDefaultValue(values == null ? "" : values.get(0));
-						input.setDesc(name);
-						input.setId(colname);
-					}else if("day".equalsIgnoreCase(type)){
+					if ("day".equalsIgnoreCase(type)) {
 						DateSelectContext target = new DateSelectContextImpl();
-						String val = (String)param.getSt();
+						String val = (String) param.getSt();
 						target.setDefaultValue(val == null ? "" : val.replaceAll("-", ""));
 						target.setDesc("开始" + name);
 						target.setId("s_" + colname);
 						input = target;
-						
+
 						//创建第二个参数
 						DateSelectContext target2 = new DateSelectContextImpl();
-						String val2 = (String)param.getEnd();
+						String val2 = (String) param.getEnd();
 						target2.setDefaultValue(val2 == null ? "" : val2.replaceAll("-", ""));
 						target2.setDesc("结束" + name);
 						target2.setId("e_" + colname);
 						input2 = target2;
-					}else if("month".equalsIgnoreCase(type)){
+					} else if ("month".equalsIgnoreCase(type)) {
 						SelectContextImpl target = new SelectContextImpl();
 						String sql = this.createMonthSql();
 						String template = TemplateManager.getInstance().createTemplate(sql);
@@ -132,8 +124,8 @@ public class ReportService extends BaseCompService {
 						input = target;
 						input.setDefaultValue(param.getSt());
 						input.setDesc("开始" + name);
-						input.setId("s_" +colname);
-						
+						input.setId("s_" + colname);
+
 						//创建第二个参数
 						SelectContextImpl target2 = new SelectContextImpl();
 						String template2 = TemplateManager.getInstance().createTemplate(sql);
@@ -142,18 +134,29 @@ public class ReportService extends BaseCompService {
 						target2.setDesc("结束" + name);
 						target2.setId("e_" + colname);
 						input2 = target2;
+					} else {
+						MultiSelectContextImpl target = new MultiSelectContextImpl();
+						String sql = this.createDimSql(param);
+						String template = TemplateManager.getInstance().createTemplate(sql);
+						target.setTemplateName(template);
+						input = target;
+						input.setDefaultValue(values == null ? "" : values.get(0));
+						input.setDesc(name);
+						input.setId(colname);
 					}
 					div.getChildren().add(input);
 					input.setParent(div);
-					if(input2 != null){
+					this.params.put(input.getId(), input);
+					if (input2 != null) {
 						div.getChildren().add(input2);
 						input2.setParent(div);
+						this.params.put(input2.getId(), input2);
 					}
 				}
 				ButtonContext btn = new ButtonContextImpl();
 				btn.setDesc("查询");
 				btn.setType("button");
-				btn.setMvId(new String[]{ deftMvId });
+				btn.setMvId(new String[]{deftMvId});
 				div.getChildren().add(btn);
 				btn.setParent(div);
 			}
@@ -288,5 +291,9 @@ public class ReportService extends BaseCompService {
 	public String createMonthSql(){
 		String sql = "select mid \"value\", mname \"text\" from code_month order by mid desc";
 		return sql;
+	}
+
+	public Map<String, InputField> getParams() {
+		return params;
 	}
 }

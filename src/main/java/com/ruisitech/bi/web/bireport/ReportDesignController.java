@@ -119,9 +119,9 @@ public class ReportDesignController extends BaseController {
 	public @ResponseBody Object print(String pageInfo, HttpServletRequest req, HttpServletResponse res) throws Exception{
 		ExtContext.getInstance().removeMV(ReportService.deftMvId);
 		JSONObject obj = (JSONObject)JSON.parse(pageInfo);
-		MVContext mv = reportService.json2MV(obj, 0);
+		MVContext mv = reportService.json2MV(obj, 1);
 		CompPreviewService ser = new CompPreviewService(req, res, req.getServletContext());
-		ser.setParams(null);
+		ser.setParams(reportService.getParams());
 		ser.initPreview();
 
 		String ret = ser.buildMV(mv, req.getServletContext());
