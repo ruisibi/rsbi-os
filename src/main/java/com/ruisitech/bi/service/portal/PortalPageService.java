@@ -198,7 +198,7 @@ public class PortalPageService extends BaseCompService {
 							dsids.add(dsid);
 						}
 					}
-					target.setAddEmptyValue(true);
+					//target.setAddEmptyValue(true);
 					input = target;
 				}else if("checkbox".equals(type)){
 					SelectContext target = new MultiSelectContextImpl();

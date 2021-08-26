@@ -75,6 +75,6 @@ public class CubeController extends BaseController {
 		if(ret.size() == 0){
 			return super.buildError("无数据");
 		}
-		return ret;
+		return super.buildSucces(ret);
 	}
 }
