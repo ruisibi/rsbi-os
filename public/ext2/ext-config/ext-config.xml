@@ -29,7 +29,7 @@
 	<chart shape="radar" class="com.rsbi.ext.engine.view.emitter.chart.echarts.RadarChart"/>
 	<chart shape="scatter" class="com.rsbi.ext.engine.view.emitter.chart.echarts.ScatterChart"/>
 	<chart shape="scatterMap" class="com.rsbi.ext.engine.view.emitter.chart.echarts.ScatterMapChart"/>
-	
+
 	<db type="oracle" class="com.rsbi.ext.engine.dao.OracleHelperImpl"/>
 	<db type="mysql" class="com.rsbi.ext.engine.dao.MysqlHelperImpl"/>
 	<db type="sqlser" class="com.rsbi.ext.engine.dao.SqlServerHelperImpl"/>
@@ -38,6 +38,7 @@
 	<db type="kylin" class="com.rsbi.ext.engine.dao.KylinHelperImpl"/>
 	<db type="postgresql" class="com.rsbi.ext.engine.dao.PostgresqlHelperImpl"/>
 	<db type="sqlite" class="com.ruisitech.bi.util.SqliteHelperImpl"/>
+	<db type="clickhouse" class="com.ruisi.ext.engine.dao.ClickHouseHelperImpl"/>
 
 	<service id="ext.sys.param.cascade" class="com.rsbi.ext.engine.service.impl.ParameterCascadeServiceImpl" result="global"/>
 	<service id="ext.sys.fenye.ajax" class="com.rsbi.ext.engine.service.impl.AjaxFenyeServiceImpl" result="global"/>
