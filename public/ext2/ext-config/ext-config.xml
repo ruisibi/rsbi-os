@@ -38,7 +38,7 @@
 	<db type="kylin" class="com.rsbi.ext.engine.dao.KylinHelperImpl"/>
 	<db type="postgresql" class="com.rsbi.ext.engine.dao.PostgresqlHelperImpl"/>
 	<db type="sqlite" class="com.ruisitech.bi.util.SqliteHelperImpl"/>
-	<db type="clickhouse" class="com.ruisi.ext.engine.dao.ClickHouseHelperImpl"/>
+	<db type="clickhouse" class="com.rsbi.ext.engine.dao.ClickHouseHelperImpl"/>
 
 	<service id="ext.sys.param.cascade" class="com.rsbi.ext.engine.service.impl.ParameterCascadeServiceImpl" result="global"/>
 	<service id="ext.sys.fenye.ajax" class="com.rsbi.ext.engine.service.impl.AjaxFenyeServiceImpl" result="global"/>
