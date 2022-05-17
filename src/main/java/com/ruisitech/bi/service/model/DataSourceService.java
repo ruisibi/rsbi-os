@@ -39,19 +39,19 @@ public class DataSourceService {
 	public static final String showTables_hive = "show tables";
 	public static final String showTables_kylin = "show tables";
 	**/
-	
+
 	private Logger log = Logger.getLogger(DataSourceService.class);
-	
+
 	@Autowired
 	private DataSourceMapper mapper;
-	
+
 	@Autowired
 	private ModelCacheService cacheService;
-	
+
 	public List<DataSource> listDataSource(){
 		return mapper.listDataSource();
 	}
-	
+
 	public void insertDataSource(DataSource ds){
 		ds.setDsid(UUID.randomUUID().toString().replaceAll("-", ""));
 		if("jndi".equals(ds.getUse())){
@@ -59,7 +59,7 @@ public class DataSourceService {
 		}
 		mapper.insertDataSource(ds);
 	}
-	
+
 	public void updateDataSource(DataSource ds){
 		if("jndi".equals(ds.getUse())){
 			ds.setDsname(ds.getJndiName());
@@ -68,23 +68,23 @@ public class DataSourceService {
 		//清除缓存
 		this.cacheService.removeDsource(ds.getDsid());
 	}
-	
+
 	public void deleteDataSource(String dsid){
 		mapper.deleteDataSource(dsid);
 		//清除缓存
 		this.cacheService.removeDsource(dsid);
 	}
-	
+
 	public DataSource getDataSource(String dsid){
 		return mapper.getDataSource(dsid);
 	}
-	
+
 	public Result testJNDI(DataSource ds){
 		Result ret = new Result();
 		Connection con = null;
 		try{
-		  	Context ctx = new InitialContext();      
-		    String strLookup = "java:comp/env/"+ds.getJndiName(); 
+		  	Context ctx = new InitialContext();
+		    String strLookup = "java:comp/env/"+ds.getJndiName();
 		    javax.sql.DataSource sds = (javax.sql.DataSource) ctx.lookup(strLookup);
 		    con = sds.getConnection();
 		    if (con != null){
@@ -107,7 +107,7 @@ public class DataSourceService {
 		}
 		return ret;
 	}
-	
+
 	public Connection getJDBC(DataSource ds) throws Exception{
 		try {
 			Connection conn = null;
@@ -118,12 +118,12 @@ public class DataSourceService {
 			throw e;
 		}
 	}
-	
+
 	public Connection getJndi(DataSource ds) throws Exception {
 		Connection con = null;
 		try {
-			Context ctx = new InitialContext();      
-		    String strLookup = "java:comp/env/"+ds.getJndiName(); 
+			Context ctx = new InitialContext();
+		    String strLookup = "java:comp/env/"+ds.getJndiName();
 		    javax.sql.DataSource sds =(javax.sql.DataSource) ctx.lookup(strLookup);
 		    con = sds.getConnection();
 		}catch(Exception ex){
@@ -132,7 +132,7 @@ public class DataSourceService {
 		}
 	    return con;
 	}
-	
+
 	public Result testDataSource(DataSource ds) throws ExtConfigException {
 		Result ret = new Result();
 		String clazz = ds.getClazz();
@@ -160,7 +160,7 @@ public class DataSourceService {
 		}
 		return ret;
 	}
-	
+
 	public List<Map<String, Object>> listTables(String dsid, String searchTname) throws Exception{
 		DataSource ds = mapper.getDataSource(dsid);
 		final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
@@ -174,6 +174,8 @@ public class DataSourceService {
 			String schem = null;
 			if("oracle".equals(ds.getLinkType())){
 				schem = ds.getLinkName().toUpperCase();
+			}else if("clickhouse".equals(ds.getLinkType())){
+				schem = conn.getSchema();
 			}
 			if("postgresql".equals(ds.getLinkType())) {
 				if (ds.getLinkUrl().toLowerCase().indexOf("schema") > 0) {
@@ -200,7 +202,7 @@ public class DataSourceService {
 				ret.add(m);
 			}
 			tbs.close();
-			
+
 			/**
 			String qsql = null;
 			if("mysql".equals(ds.getLinkType())){
@@ -219,8 +221,8 @@ public class DataSourceService {
 				qsql = showTables_kylin;
 			}
 			ResultSet tbs = conn.getMetaData().getTables(null, null, "%", new String[]{"TABLE"});
-			
-		
+
+
 			while(tbs.next()){
 				for(int i=0; i<tbs.getMetaData().getColumnCount(); i++){
 					String col = tbs.getMetaData().getColumnLabel(i + 1);

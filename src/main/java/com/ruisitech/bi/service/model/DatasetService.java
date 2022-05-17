@@ -29,22 +29,22 @@ public class DatasetService extends BaseCompService {
 
 	@Autowired
 	private DatasetMapper mapper;
-	
+
 	@Autowired
 	private DataSourceService dsService;
-	
+
 	@Autowired
 	private ModelCacheService cacheService;
-	
+
 	@Autowired
 	private DimensionMapper dimMapper;
 
 	private static Logger logger = Logger.getLogger(DatasetService.class);
-	
+
 	public List<Dataset> listDataset(){
 		return mapper.listDataset();
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public void updateDset(Dataset ds){
 		mapper.updateDset(ds);
@@ -64,15 +64,15 @@ public class DatasetService extends BaseCompService {
 				dimMapper.updateColType(param);
 			}
 		}
-		
+
 		//删除缓存
 		cacheService.removeDset(ds.getDsid());
 	}
-	
+
 	/**
 	 * 重新加载数据集的字段
 	 * @param dsetId
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void reloadDset(String dsetId, String dsid) throws Exception{
 		String cfg = mapper.getDatasetCfg(dsetId);
@@ -102,7 +102,7 @@ public class DatasetService extends BaseCompService {
 		//删除缓存
 		cacheService.removeDset(ds.getDsetId());
 	}
-	
+
 	private boolean existCol(String colName, JSONArray cols){
 		boolean ext = false;
 		for(int i=0; i<cols.size(); i++){
@@ -115,21 +115,21 @@ public class DatasetService extends BaseCompService {
 		}
 		return ext;
 	}
-	
+
 	public void insertDset(Dataset ds){
 		mapper.insertDset(ds);
 	}
-	
+
 	public void deleteDset(String dsetId){
 		mapper.deleteDset(dsetId);
 		//删除缓存
 		cacheService.removeDset(dsetId);
 	}
-	
+
 	public String getDatasetCfg(String dsetId){
 		return mapper.getDatasetCfg(dsetId);
 	}
-	
+
 	public List<DSColumn> listTableColumns(String dsid, String tname) throws Exception{
 		DataSource ds = dsService.getDataSource(dsid);
 		Connection conn = null;
@@ -156,7 +156,7 @@ public class DatasetService extends BaseCompService {
 			}
 		}
 	}
-	
+
 	public List<DSColumn> copyValue(ResultSet rs) throws SQLException{
 		ResultSetMetaData meta = rs.getMetaData();
 		List<DSColumn> cols = new ArrayList<DSColumn>();
@@ -183,28 +183,43 @@ public class DatasetService extends BaseCompService {
 		}
 		return cols;
 	}
-	
+
+	/**
+	 * java类型到 数据库类型
+	 * @param tp
+	 * @return
+	 */
 	public String columnType2java(String tp){
 		tp = tp.replaceAll(" UNSIGNED", ""); //mysql 存在 UNSIGNED 类型, 比如： INT UNSIGNED
 		String ret = null;
-		if("varchar".equalsIgnoreCase(tp) || "varchar2".equalsIgnoreCase(tp) || "nvarchar".equalsIgnoreCase(tp) || "char".equalsIgnoreCase(tp)){
+		if("varchar".equalsIgnoreCase(tp) || "bpchar".equalsIgnoreCase(tp) || "varchar2".equalsIgnoreCase(tp) || "nvarchar2".equalsIgnoreCase(tp) || "char".equalsIgnoreCase(tp) || "string".equalsIgnoreCase(tp)
+				|| tp.toLowerCase().indexOf("text") >= 0 || tp.toLowerCase().indexOf("string") >= 0 || tp.toLowerCase().indexOf("enum8") >= 0){
 			ret = "String";
-		}else if("int".equalsIgnoreCase(tp) || "MEDIUMINT".equalsIgnoreCase(tp) || "BIGINT".equalsIgnoreCase(tp) || "smallint".equalsIgnoreCase(tp) || "TINYINT".equalsIgnoreCase(tp)){
+		}else if("int".equalsIgnoreCase(tp) || "int4".equalsIgnoreCase(tp) || "float4".equalsIgnoreCase(tp) ||  "INTEGER".equalsIgnoreCase(tp) || "MEDIUMINT".equalsIgnoreCase(tp) || "smallint".equalsIgnoreCase(tp) || "TINYINT".equalsIgnoreCase(tp)
+				|| "BIT".equalsIgnoreCase(tp) || "UInt32".equalsIgnoreCase(tp) || "UInt8".equalsIgnoreCase(tp)){
 			ret = "Int";
-		}else if("number".equalsIgnoreCase(tp) || "DECIMAL".equalsIgnoreCase(tp) || "Float".equalsIgnoreCase(tp) || "Double".equalsIgnoreCase(tp)){
+		}else if( "int8".equalsIgnoreCase(tp) || "BIGINT".equalsIgnoreCase(tp)){
+			ret = "Long";
+		}else if("number".equalsIgnoreCase(tp) || "numeric".equalsIgnoreCase(tp) || "DECIMAL".equalsIgnoreCase(tp) || "Float".equalsIgnoreCase(tp) || "Double".equalsIgnoreCase(tp) || "REAL".equalsIgnoreCase(tp) || "dec".equalsIgnoreCase(tp)
+				|| "Float32".equalsIgnoreCase(tp)){
 			ret = "Double";
-		}else if("DATETIME".equalsIgnoreCase(tp) || "DATE".equalsIgnoreCase(tp) || "Timestamp".equalsIgnoreCase(tp)){
+		}else if("DATETIME".equalsIgnoreCase(tp) || "Timestamp".equalsIgnoreCase(tp)){
+			ret = "Datetime";
+		}else if("DATE".equalsIgnoreCase(tp)){
 			ret = "Date";
+		}
+		if(ret == null){
+			System.out.println("tp = " + tp+" 字段类型未映射成功");
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * 查询数据集的字段
 	 * @param dataset
 	 * @param dsid
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<DSColumn> queryMetaAndIncome(JSONObject dataset, String dsid) throws Exception{
 		DataSource ds = this.dsService.getDataSource(dsid);
@@ -217,7 +232,7 @@ public class DatasetService extends BaseCompService {
 		if(joinTabs!=null&&joinTabs.size() != 0){ //无关联表，不需要该字段
 			sb.append(",'' a$idx ");
 		}
-		
+
 		List<String> tabs = new ArrayList<String>(); //需要进行关联的表，从joininfo中获取，剔除重复的表
 		for(int i=0; joinTabs!=null&&i<joinTabs.size(); i++){
 			JSONObject join = joinTabs.getJSONObject(i);
@@ -226,7 +241,7 @@ public class DatasetService extends BaseCompService {
 				tabs.add(ref);
 			}
 		}
-		
+
 		for(int i=0; i<tabs.size(); i++){
 			sb.append(", a"+(i+1)+".* ");
 			if(i != tabs.size() - 1){
@@ -254,7 +269,7 @@ public class DatasetService extends BaseCompService {
 				sb.append(" ");
 			}
 		}
-		
+
 		Connection conn  = null;
 		try {
 			if(ds.getUse().equals("jndi")){
@@ -265,7 +280,7 @@ public class DatasetService extends BaseCompService {
 			PreparedStatement ps = conn.prepareStatement(sb.toString());
 			ps.setMaxRows(1);
 			ResultSet rs = ps.executeQuery();
-			
+
 			ResultSetMetaData meta = rs.getMetaData();
 			List<DSColumn> cols = new ArrayList<DSColumn>();
 			String tname = tables.get(0);
@@ -387,7 +402,7 @@ public class DatasetService extends BaseCompService {
 			}
 		}
 	}
-	
+
 	private List<JSONObject> getJoinInfoByTname(String tname, JSONArray joins){
 		List<JSONObject> ret = new ArrayList<JSONObject>();
 		for(int i=0; joins!=null&&i<joins.size(); i++){
