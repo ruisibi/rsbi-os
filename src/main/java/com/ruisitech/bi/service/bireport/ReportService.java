@@ -34,9 +34,9 @@ import java.util.*;
 @Service
 @Scope("prototype")
 public class ReportService extends BaseCompService {
-	
+
 	public final static String deftMvId = "mv.export.tmp";
-	
+
 	@Autowired
 	private ModelCacheService cacheService;
 	@Autowired
@@ -47,14 +47,14 @@ public class ReportService extends BaseCompService {
 	Map<String, InputField> params = new HashMap<>();
 
 	public @PostConstruct void init() {
-		
-	}  
-	
-	public @PreDestroy void destory() {
-		
+
 	}
-	
-	
+
+	public @PreDestroy void destory() {
+
+	}
+
+
 	public MVContext json2MV(JSONObject json, int release) throws Exception{
 		//创建MV
 		MVContext mv = new MVContextImpl();
@@ -185,12 +185,12 @@ public class ReportService extends BaseCompService {
 		for(String dsid : dsids){
 			super.createDsource(cacheService.getDsource(dsid), mv);
 		}
-		
+
 		return mv;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param mv
 	 * @param release  判断当前是否为发布状态, 0 表示不是发布，1表示发布到多维分析，2表示发布到仪表盘
 	 * @return
@@ -202,7 +202,7 @@ public class ReportService extends BaseCompService {
 		if(dsid == null || dsid.length() == 0){
 			return;
 		}
-		
+
 		//添加kpiOther
 		DimDto kpiOther = new DimDto();
 		kpiOther.setType("kpiOther");
@@ -213,7 +213,7 @@ public class ReportService extends BaseCompService {
 		cr.setId("comp");
 		cr.setOut("html");
 		cr.setShowData(true);
-		
+
 		String sql = tableService.createSql(table, release);
 		//创建datacenter
 		GridDataCenterContext dc = tableService.createDataCenter(sql, table);
@@ -223,22 +223,27 @@ public class ReportService extends BaseCompService {
 			mv.setGridDataCenters(new HashMap<String, GridDataCenterContext>());
 		}
 		mv.getGridDataCenters().put(dc.getId(), dc);
-		
+
 		mv.getChildren().add(cr);
 		cr.setParent(mv);
-		
+
 		Map<String, CrossReportContext> crs = new HashMap<String, CrossReportContext>();
 		crs.put(cr.getId(), cr);
 		mv.setCrossReports(crs);
+
+		String scripts = tableService.getScripts().toString();
+		if( scripts.length() > 0){
+			mv.setScripts(scripts);
+		}
 	}
-	
+
 	public void createChart(MVContext mv, ChartQueryDto chart, int release) throws IOException, ParseException{
 		String dsid = chart.getDsid();
 		if(dsid == null || dsid.length() == 0){
 			return;
 		}
-		
-		
+
+
 		//创建钻取维度
 		StringBuffer sb = new StringBuffer("");
 		int cnt = 0;
@@ -266,15 +271,15 @@ public class ReportService extends BaseCompService {
 			mv.setGridDataCenters(new HashMap<String, GridDataCenterContext>());
 		}
 		mv.getGridDataCenters().put(dc.getId(), dc);
-		
+
 		mv.getChildren().add(cr);
 		cr.setParent(mv);
-		
+
 		Map<String, ChartContext> crs = new HashMap<String, ChartContext>();
 		crs.put(cr.getId(), cr);
 		mv.setCharts(crs);
 	}
-	
+
 	public String createDimSql(ParamDto dim){
 		String tname = dim.getTableName();
 		if(tname == null || tname.length() == 0){  //维度未关联码表,直接从数据中查询。
@@ -287,7 +292,7 @@ public class ReportService extends BaseCompService {
 			return sql;
 		}
 	}
-	
+
 	public String createMonthSql(){
 		String sql = "select mid \"value\", mname \"text\" from code_month order by mid desc";
 		return sql;

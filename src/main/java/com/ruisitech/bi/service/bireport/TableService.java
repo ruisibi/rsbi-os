@@ -38,18 +38,18 @@ import java.util.Map;
 @Service
 @Scope("prototype")
 public class TableService extends BaseCompService {
-	
+
 	public final static String deftMvId = "mv.tmp.table";
-	
+
 	private Map<String, InputField> mvParams = new HashMap<String, InputField>(); //mv的参数
-	
+
 	private StringBuffer scripts = new StringBuffer(); //用来构造js 脚本的字符串对象
-	
+
 	/***
 	 * 当指标有计算指标时，需要计算上期、同期等值，在显示数据时需要对偏移的数据进行过滤，
 	 */
 	private List<GridFilterContext> filters = new ArrayList<GridFilterContext>();
-	
+
 	/**
 	 * 数据权限接口
 	 */
@@ -58,16 +58,16 @@ public class TableService extends BaseCompService {
 
 	@Autowired
 	private ModelCacheService cacheService;
-	
+
 	public @PostConstruct void init() {
-		
-	}  
-	
+
+	}
+
 	public @PreDestroy void destory() {
 		mvParams.clear();
 		filters.clear();
 	}
-	
+
 	public MVContext json2MV(TableQueryDto table) throws ParseException, IOException{
 		//创建MV
 		MVContext mv = new MVContextImpl();
@@ -75,7 +75,7 @@ public class TableService extends BaseCompService {
 		String formId = ExtConstants.formIdPrefix + IdCreater.create();
 		mv.setFormId(formId);
 		mv.setMvid(deftMvId);
-		
+
 		//创建corssReport
 		//添加kpiOther
 		DimDto kpiOther = new DimDto();
@@ -91,11 +91,11 @@ public class TableService extends BaseCompService {
 
 		mv.getChildren().add(cr);
 		cr.setParent(mv);
-		
+
 		Map<String, CrossReportContext> crs = new HashMap<String, CrossReportContext>();
 		crs.put(cr.getId(), cr);
 		mv.setCrossReports(crs);
-		
+
 		//创建datacenter
 		String sql = this.createSql(table, 0);
 		GridDataCenterContext dc = this.createDataCenter(sql, table);
@@ -104,25 +104,25 @@ public class TableService extends BaseCompService {
 			mv.setGridDataCenters(new HashMap<String, GridDataCenterContext>());
 		}
 		mv.getGridDataCenters().put(dc.getId(), dc);
-		
+
 		//判断是否需要创建数据源
 		String dsid = super.createDsource(cacheService.getDsource(table.getDsid()), mv);
 		dc.getConf().setRefDsource(dsid);
-		
+
 		String scripts = this.scripts.toString();
 		if(scripts != null && scripts.length() > 0){
 			mv.setScripts(scripts);
 		}
 		return mv;
 	}
-	
+
 	public CrossReportContext json2Table(TableQueryDto table) throws ParseException{
 		CrossReportContext ctx = new CrossReportContextImpl();
-		
+
 		CrossCols cols = new CrossCols();
 		cols.setCols(new ArrayList<CrossField>());
 		ctx.setCrossCols(cols);
-		
+
 		CrossRows rows = new CrossRows();
 		rows.setRows(new ArrayList<CrossField>());
 		ctx.setCrossRows(rows);
@@ -134,7 +134,7 @@ public class TableService extends BaseCompService {
 			baseKpi.setAlias("kpi_value");
 			ctx.setBaseKpi(baseKpi);
 		}
-		
+
 		ctx.setLabel(table.getCompId());  //给组件设置label
 		boolean uselink = false;
 		Map<String, Object> link = table.getLink();
@@ -153,17 +153,17 @@ public class TableService extends BaseCompService {
 			ctx.getCrossRows().setLink(rlink);
 			uselink = true;
 		}
-		
+
 		//表格钻取维度
 		List<RowDimContext> drill = this.getDrillDim(table);
 		if(drill != null && drill.size() > 0){
 			ctx.setDims(drill);
 			uselink = true;
 		}
-	
+
 		loopJsonField(table.getCols(), cols.getCols(), table.getKpiJson(), "col", uselink);
 		loopJsonField(table.getRows(), rows.getRows(), table.getKpiJson(), "row", uselink);
-		
+
 		//如果没有维度，添加none维度
 		if(cols.getCols().size() == 0){
 			CrossField cf = new CrossField();
@@ -177,10 +177,10 @@ public class TableService extends BaseCompService {
 			cf.setDesc("合计");
 			rows.getRows().add(cf);
 		}
-		
+
 		return ctx;
 	}
-	
+
 	/**
 	 * 生成表格SQL
 	 * @param table
@@ -211,7 +211,7 @@ public class TableService extends BaseCompService {
 				}
 			}
 		}
-		
+
 		List<KpiDto> kpis = table.getKpiJson();
 		if(kpis.size() == 0){
 			sql.append(" 0 kpi_value ");
@@ -233,7 +233,7 @@ public class TableService extends BaseCompService {
 		JSONArray joinTabs = (JSONArray)dset.get("joininfo");
 		String master = dset.getString("master");
 		sql.append(" from " + master + " a0");
-		
+
 		for(int i=0; joinTabs!=null&&i<joinTabs.size(); i++){  //通过主表关联
 			JSONObject tab = joinTabs.getJSONObject(i);
 			String ref = tab.getString("ref");
@@ -247,15 +247,15 @@ public class TableService extends BaseCompService {
 			sql.append(" ");
 		}
 		sql.append(" where 1=1 ");
-		
+
 		//处理数据权限
 		if(dataControl != null){
 			sql.append(dataControl.process(RSBIUtils.getLoginUserInfo(), dset.getString("master")));
 		}
-		
+
 		for(int i=0; i<dims.size(); i++){
 			DimDto dim = dims.get(i);
-			
+
 			//处理日期限制
 			if(dim.getType().equals("day")){
 				if(dim.getDay() != null){
@@ -345,7 +345,7 @@ public class TableService extends BaseCompService {
 				}
 			}
 		}
-		
+
 		//限制参数的查询条件
 		for(int i=0; table.getParams() != null && i<table.getParams().size(); i++){
 			ParamDto param = table.getParams().get(i);
@@ -420,7 +420,7 @@ public class TableService extends BaseCompService {
 				}
 			}
 		}
-		
+
 		//处理事件接受的参数限制条件
 		Map<String, Object> linkAccept = table.getLinkAccept();
 		if(linkAccept != null && linkAccept.size() > 0){
@@ -432,7 +432,7 @@ public class TableService extends BaseCompService {
 			}
 			sql.append(" and  " + col + " = " + ncol);
 		}
-		
+
 		if(dims.size() > 0){
 			sql.append(" group by ");
 			for(int i=0; i<dims.size(); i++){
@@ -500,7 +500,7 @@ public class TableService extends BaseCompService {
 					order.append(",");
 				}
 			}
-			
+
 			//再按row排序
 			for(int i=0; i<table.getRows().size(); i++){
 				DimDto dim = table.getRows().get(i);
@@ -511,8 +511,8 @@ public class TableService extends BaseCompService {
 					order.append(",");
 				}
 			}
-			
-			
+
+
 			if(order.length() <= 11 ){  //判断是否拼接了 order by 字段
 				return sql.toString().replaceAll("@", "'");
 			}else{
@@ -523,7 +523,7 @@ public class TableService extends BaseCompService {
 			return sql.toString().replaceAll("@", "'");
 		}
 	}
-	
+
 	/**
 	 * 创建表格datacenter
 	 * @param sql
@@ -538,7 +538,7 @@ public class TableService extends BaseCompService {
 		ctx.setId("DC-" + IdCreater.create());
 		String name = TemplateManager.getInstance().createTemplate(sql);
 		ctx.getConf().setTemplateName(name);
-		
+
 		//判断指标计算
 		for(KpiDto kpi : dto.getKpiJson()){
 			if(kpi.getCompute() != null && kpi.getCompute().length() > 0){
@@ -560,15 +560,15 @@ public class TableService extends BaseCompService {
 				}
 			}
 		}
-		
+
 		//判断是否有时间偏移的计算
 		for(GridFilterContext filter : this.filters){
 			ctx.getProcess().add(filter);
 		}
-		
+
 		return ctx;
 	}
-	
+
 	/**
 	 * 创建指标排名process
 	 * @param sqlVO
@@ -579,7 +579,7 @@ public class TableService extends BaseCompService {
 		GridSortContext proc = new GridSortContext();
 		proc.setAppendOrder(true);
 		proc.setChangeOldOrder(false);
-		
+
 		//创建排序的分组维
 		StringBuffer sb = new StringBuffer("");
 		StringBuffer orderSb = new StringBuffer("");
@@ -597,7 +597,7 @@ public class TableService extends BaseCompService {
 		proc.setType(orderSb.toString().split(","));
 		return proc;
 	}
-	
+
 	/**
 	 * 创建时间偏移process,时间偏移用来计算同比、环比、上期、同期等值
 	 * @param sqlVO
@@ -641,7 +641,7 @@ public class TableService extends BaseCompService {
 		}
 		return proc;
 	}
-	
+
 	private GridProcContext createMoveAvg(TableQueryDto sqlVO, KpiDto kpi){
 		ComputeMoveAvgContext ctx = new ComputeMoveAvgContext();
 		ctx.setAlias(kpi.getAlias()+"_ydpj");
@@ -649,7 +649,7 @@ public class TableService extends BaseCompService {
 		ctx.setStep(3);
 		return ctx;
 	}
-	
+
 	/**
 	 * 创建占比计算process
 	 */
@@ -662,7 +662,7 @@ public class TableService extends BaseCompService {
 			DimDto dim = sqlVO.getCols().get(i);
 			sb.append(dim.getColname());
 			sb.append(",");
-			
+
 		}
 		if(sb.length() > 0){
 			String str = sb.substring(0, sb.length() - 1);
@@ -670,16 +670,16 @@ public class TableService extends BaseCompService {
 		}
 		return proc;
 	}
-	
+
 	private void loopJsonField(List<DimDto> arrays, List<CrossField> ls, List<KpiDto> kpis, String pos, boolean uselink) throws ParseException{
 		List<CrossField> tmp = ls;
 		for(int i=0; i<arrays.size(); i++){
 			DimDto obj = arrays.get(i);
 			String type = obj.getType();
 			String issum = obj.getIssum();
-			
+
 			if(type.equals("kpiOther")){
-				
+
 				List<CrossField> newCf = new ArrayList<CrossField>();
 				if(tmp.size() == 0){
 					for(KpiDto kpi : kpis){
@@ -701,7 +701,7 @@ public class TableService extends BaseCompService {
 						}else{
 							cf.setDesc(kpi.getKpi_name());  //指标名称
 						}
-						
+
 						//当回调函数和指标预警同时起作用时， 指标预警起作用
 						//处理回调函数
 						cf.setJsFunc(kpi.getFuncname());
@@ -710,7 +710,7 @@ public class TableService extends BaseCompService {
 							code = RSBIUtils.unescape(code);
 							this.scripts.append("function "+cf.getJsFunc()+"(value,col,row,data){"+code+"}");
 						}
-						
+
 						//处理指标预警
 						Map<String, Object> warn = kpi.getWarning();
 						if(warn != null && !warn.isEmpty()){
@@ -719,7 +719,7 @@ public class TableService extends BaseCompService {
 						}
 						tmp.add(cf);
 						newCf.add(cf);
-						
+
 						//判断指标是否需要进行计算
 						if(kpi.getCompute() != null && kpi.getCompute().length() > 0){
 							String[] jss = kpi.getCompute().split(",");  //可能有多个计算，用逗号分隔
@@ -767,7 +767,7 @@ public class TableService extends BaseCompService {
 							}
 							tp.getSubs().add(cf);
 							newCf.add(cf);
-							
+
 							//判断指标是否需要进行计算
 							if(kpi.getCompute() != null && kpi.getCompute().length() > 0){
 								String[] jss = kpi.getCompute().split(",");  //可能有多个计算，用逗号分隔
@@ -781,11 +781,11 @@ public class TableService extends BaseCompService {
 					}
 				}
 				tmp = newCf;
-				
-				
+
+
 			}else if("day".equals(type)){
 				List<CrossField> newCf = new ArrayList<CrossField>();
-				
+
 				if(tmp.size() == 0){
 					CrossField cf = new CrossField();
 					/**
@@ -800,7 +800,7 @@ public class TableService extends BaseCompService {
 					}
 					**/
 					cf.setCasParent(true);
-					
+
 					Integer top = obj.getTop();
 					cf.setTop(top);
 					String topType = obj.getTopType();
@@ -821,7 +821,7 @@ public class TableService extends BaseCompService {
 					cf.setSubs(new ArrayList<CrossField>());
 					tmp.add(cf);
 					newCf.add(cf);
-					
+
 					//添加合计项
 					if("y".equals(issum)){
 						CrossField sumcf = new CrossField();
@@ -835,7 +835,7 @@ public class TableService extends BaseCompService {
 						tmp.add(sumcf);
 						newCf.add(sumcf);
 					}
-					
+
 				}else{
 					for(CrossField tp : tmp){
 						//如果上级是合计，下级不包含维度了
@@ -870,10 +870,10 @@ public class TableService extends BaseCompService {
 						cf.setAliasDesc(alias);
 						cf.setSubs(new ArrayList<CrossField>());
 						cf.setParent(tp);
-						
+
 						tp.getSubs().add(cf);
 						newCf.add(cf);
-						
+
 						//添加合计项
 						if("y".equals(issum)){
 							CrossField sumcf = new CrossField();
@@ -890,7 +890,7 @@ public class TableService extends BaseCompService {
 					}
 				}
 				tmp = newCf;
-				
+
 			}else if("month".equals(type)){
 				List<CrossField> newCf = new ArrayList<CrossField>();
 				if(tmp.size() == 0){
@@ -923,7 +923,7 @@ public class TableService extends BaseCompService {
 					cf.setSubs(new ArrayList<CrossField>());
 					tmp.add(cf);
 					newCf.add(cf);
-					
+
 					//添加合计项
 					if("y".equals(issum)){
 						CrossField sumcf = new CrossField();
@@ -937,7 +937,7 @@ public class TableService extends BaseCompService {
 						tmp.add(sumcf);
 						newCf.add(sumcf);
 					}
-					
+
 				}else{
 					for(CrossField tp : tmp){
 						//如果上级是合计，下级不包含维度了
@@ -972,10 +972,10 @@ public class TableService extends BaseCompService {
 						cf.setAliasDesc(alias);
 						cf.setSubs(new ArrayList<CrossField>());
 						cf.setParent(tp);
-						
+
 						tp.getSubs().add(cf);
 						newCf.add(cf);
-						
+
 						//添加合计项
 						if("y".equals(issum)){
 							CrossField sumcf = new CrossField();
@@ -1018,7 +1018,7 @@ public class TableService extends BaseCompService {
 					cf.setSubs(new ArrayList<CrossField>());
 					tmp.add(cf);
 					newCf.add(cf);
-					
+
 					//添加合计项
 					if("y".equals(issum)){
 						CrossField sumcf = new CrossField();
@@ -1031,7 +1031,7 @@ public class TableService extends BaseCompService {
 						sumcf.setSubs(new ArrayList<CrossField>());
 						tmp.add(sumcf);
 						newCf.add(sumcf);
-						
+
 						//如果是col,需要给合计添加指标
 						/**
 						if(pos.equals("col")){
@@ -1055,12 +1055,12 @@ public class TableService extends BaseCompService {
 						}
 						**/
 					}
-					
+
 				}else{
 					for(CrossField tp : tmp){
 						//如果上级是合计，下级不包含维度了, 但需要包含指标
 						if(tp.getType().equals("none")){
-							
+
 							//如果是col,需要给合计添加指标
 							if(pos.equals("col")){
 								for(KpiDto kpi : kpis){
@@ -1079,7 +1079,7 @@ public class TableService extends BaseCompService {
 									kpicf.setParent(tp);
 								}
 							}
-							
+
 							continue;
 						}
 						CrossField cf = new CrossField();
@@ -1097,7 +1097,7 @@ public class TableService extends BaseCompService {
 							cf.setAliasDesc(tableColName);
 						}
 						cf.setCasParent(true);
-						
+
 						cf.setTop(obj.getTop());
 						cf.setTopType(obj.getTopType());
 						cf.setUselink(uselink);
@@ -1107,7 +1107,7 @@ public class TableService extends BaseCompService {
 						cf.setParent(tp);
 						tp.getSubs().add(cf);
 						newCf.add(cf);
-						
+
 						//添加合计项
 						if("y".equals(issum)){
 							CrossField sumcf = new CrossField();
@@ -1125,10 +1125,10 @@ public class TableService extends BaseCompService {
 				}
 				tmp = newCf;
 			}
-			
+
 		}
-	}	
-	
+	}
+
 	public List<RowDimContext> getDrillDim(TableQueryDto table){
 		List<Map<String, Object>> drillDim = table.getDrillDim();
 		if(drillDim == null || drillDim.isEmpty() || table.getCols().size() != 1){  //只有一个row维度才能启用钻取
@@ -1146,28 +1146,28 @@ public class TableService extends BaseCompService {
 		}
 		return ret;
 	}
-	
+
 	public String createWarning(Map<String, Object> warn, String kpiFmt, StringBuffer scripts ){
 		String funcName = "warn"+ IdCreater.create();
 		scripts.append("function " +funcName+"(val, a, b, c, d){");
 		//先输出值
-		//scripts.append("if(d == 'json'){out.print('<span class=\"kpiValue\">');}");
-		scripts.append("if(val == null){out.print('-')}else{out.print(val, '"+kpiFmt+"');}");
+		scripts.append("var ret = '';");
+		scripts.append("if(val == null){ret += ('-')}else{ret += utils.numberFmt(val, '"+kpiFmt+"');}");
 		scripts.append("if(d != 'json'){"); //只在html模式下起作用
-		scripts.append(" return;");
+		scripts.append(" return ret;");
 		scripts.append("}");
 		scripts.append("if(val "+warn.get("logic1")+" "+warn.get("val1")+"){");
-		scripts.append("out.print(\"<span class='"+warn.get("pic1")+"'></span>\")");
+		scripts.append("ret += (\"<span class='"+warn.get("pic1")+"'></span>\")");
 		scripts.append("}else if(val "+(warn.get("logic1").equals(">=")?"<":"<=")+" "+warn.get("val1")+" && val "+warn.get("logic2")+" "+warn.get("val2")+"){");
-		scripts.append("out.print(\"<span class='"+warn.get("pic2")+"'></span>\")");
+		scripts.append("ret += (\"<span class='"+warn.get("pic2")+"'></span>\")");
 		scripts.append("}else{");
-		scripts.append("out.print(\"<span class='"+warn.get("pic3")+"'></span>\")");
+		scripts.append("ret += (\"<span class='"+warn.get("pic3")+"'></span>\")");
 		scripts.append("}");
-		//scripts.append("if(d == 'html'){out.print('</span>');}");
+		scripts.append("return ret;");
 		scripts.append("}");
-		return funcName; 
+		return funcName;
 	}
-	
+
 	private CrossField kpiCompute(String compute, KpiDto kpi){
 		CrossField cf = new CrossField();
 		if("zb".equals(compute)){
@@ -1240,5 +1240,5 @@ public class TableService extends BaseCompService {
 	public StringBuffer getScripts() {
 		return scripts;
 	}
-	
+
 }
