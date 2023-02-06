@@ -21,6 +21,8 @@ import com.ruisitech.bi.entity.portal.PortalTableQuery;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 组件基类Service
@@ -28,7 +30,7 @@ import java.util.*;
  *
  */
 public abstract class BaseCompService {
-	
+
 	protected JSONObject pageBody; //页面配置信息
 
 	public Map<String, String> createTableAlias(JSONObject dset){
@@ -41,7 +43,7 @@ public abstract class BaseCompService {
 		}
 		return tableAlias;
 	}
-	
+
 	public String createDsource(DataSource ds, MVContext mv){
 		DataSourceContext dsource = new DataSourceContext();
 		dsource.putProperty("id", ds.getDsid());
@@ -63,7 +65,7 @@ public abstract class BaseCompService {
 		mv.getDsources().put(dsource.getId(), dsource);
 		return dsource.getId();
 	}
-	
+
 	public int type2value(String tp){
 		int curDate = 4;;
 		if(tp.equals("year")){
@@ -77,7 +79,7 @@ public abstract class BaseCompService {
 		}
 		return curDate;
 	}
-	
+
 	public String loadFieldName(String aggre) {
 		if("sum".equalsIgnoreCase(aggre)){
 			return "合计值";
@@ -99,7 +101,7 @@ public abstract class BaseCompService {
 			return "合计";
 		}
 	}
-	
+
 	public String resetVals(String inputval, String type, String dateFormat, int jstype) throws ParseException {
 		if(jstype == 0){
 			return inputval;
@@ -126,7 +128,7 @@ public abstract class BaseCompService {
 		}
 		return list2String(rets);
 	}
-	
+
 	public String list2String(List<String> rets){
 		StringBuffer sb = new StringBuffer();
 		for(int i=0; i<rets.size(); i++){
@@ -138,7 +140,7 @@ public abstract class BaseCompService {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 根据指标计算的值筛选，从新设置时间字段的数据区间，主要针对日、月份的数据区间控制
 	 */
@@ -170,7 +172,7 @@ public abstract class BaseCompService {
 			return null;
 		}
 	}
-	
+
 	//输出单位比例
 	public String writerUnit(Integer bd){
 		if(bd == null){
@@ -194,7 +196,7 @@ public abstract class BaseCompService {
 			}
 		}
 	}
-	
+
 	public void parserHiddenParam(List<PortalParamDto> params, MVContext mv, Map<String, InputField> mvParams) throws ExtConfigException {
 		if(params != null){
 			for(int i=0; i<params.size(); i++){
@@ -216,7 +218,7 @@ public abstract class BaseCompService {
 			}
 		}
 	}
-	
+
 	/**
 	 * nodetype 表示筛选的类型，分为维度筛选和指标筛选两类，维度筛选和指标筛选对应的SQL位置不一样，维度放where 后， 指标放 having 后
 	 * @param params
@@ -238,7 +240,7 @@ public abstract class BaseCompService {
 			String linkparam2 = param.getLinkparam2();
 			String tname = param.getTname();
 			col = tableAlias.get(tname)+"." + col;  //加上别名
-			
+
 			if(type.equals("like")){
 				if(val != null){
 					val = "%"+val+"%";
@@ -293,7 +295,7 @@ public abstract class BaseCompService {
 		}
 		return sb.toString().replaceAll("\\[x\\]", "\\$");
 	}
-	
+
 	/**
 	 * 获取字段别名
 	 * @param kpi
@@ -310,7 +312,7 @@ public abstract class BaseCompService {
 		String name = colName.replaceAll("\\((\\S+)\\)", "(" + alias+"$1" + ")");
 		return name;
 	}
-	
+
 	/**
 	 * 组件联动时，获取 paranName
 	 * @param compId
@@ -366,6 +368,44 @@ public abstract class BaseCompService {
 	public void setPageBody(JSONObject pageBody) {
 		this.pageBody = pageBody;
 	}
-	
-	
+
+	/**
+	 * 处理 now, now-1, now + 1等字符串
+	 * @return s
+	 */
+	protected String parserDefDate(String type, String dtformat, String defVal){
+		String regEx = "\\s*now\\s*([+|-]*)\\s*([0-9]*)";
+		Pattern p = Pattern.compile(regEx);
+		Matcher m = p.matcher(defVal);
+		if(m.find()){
+			String m1 = m.group(1).trim();
+			String m2 = m.group(2).trim();
+			Calendar cal = Calendar.getInstance();
+			if(m1.length() > 0 && m2.length() > 0){
+				int tp = Calendar.DAY_OF_MONTH;
+				if("dateselect".equals(type)){
+					tp = Calendar.DAY_OF_MONTH;
+				}else if("monthselect".equals(type)){
+					tp = Calendar.MONTH;
+				}else if("yearselect".equals(type)){
+					tp = Calendar.YEAR;
+				}
+				Integer step = new Integer(m2);
+				if("+".equals(m1)){
+					cal.add(tp, step);
+				}else{
+					cal.add(tp, -step);
+				}
+				return new SimpleDateFormat(dtformat).format(cal.getTime());
+			}else if(defVal.trim().equals("now")){
+				return new SimpleDateFormat(dtformat).format(cal.getTime());
+			}else{
+				return defVal;
+			}
+		}else{
+			return defVal;
+		}
+	}
+
+
 }

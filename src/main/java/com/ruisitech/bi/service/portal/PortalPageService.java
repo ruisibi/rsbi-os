@@ -42,40 +42,40 @@ import java.util.*;
 @Service
 @Scope("prototype")
 public class PortalPageService extends BaseCompService {
-	
+
 	public final static String deftMvId = "mv.portal.tmp";
-	
+
 	private Map<String, InputField> mvParams = new HashMap<String, InputField>(); //mv的参数
 	private StringBuffer scripts = new StringBuffer();
 	private List<String> dsids = new ArrayList<String>(); //用到的数据原
-	
+
 	@Autowired
 	private DimensionService dimService;
-	
+
 	@Autowired
 	private ModelCacheService cacheService;
-	
+
 	@Autowired
 	private PortalChartService chartService;
-	
+
 	@Autowired
 	private GridService gridSerivce;
-	
+
 	@Autowired
 	private PortalTableService tableService;
-	
+
 	@Autowired
 	private BoxService boxSerivce;
-	
+
 	public @PostConstruct void init() {
-		
-	}  
-	
+
+	}
+
 	public @PreDestroy void destory() {
 		mvParams.clear();
 		dsids.clear();
 	}
-	
+
 	public MVContext json2MV(JSONObject pageJson, boolean release, boolean export) throws Exception{
 		//创建MV
 		MVContext mv = new MVContextImpl();
@@ -84,7 +84,7 @@ public class PortalPageService extends BaseCompService {
 		mv.setFormId(formId);
 		String mvId = pageJson.getString("id");  //用报表ID做MV得ID，防止报表串表
 		mv.setMvid("mv_" + mvId);
-		
+
 		//解析参数
 		Object param = pageJson.get("params");
 		if(param != null && ((JSONArray)param).size()>0){
@@ -99,7 +99,7 @@ public class PortalPageService extends BaseCompService {
 			}
 
 		}
-		
+
 		JSONObject body = pageJson.getJSONObject("body");
 		super.setPageBody(body);
 		chartService.setPageBody(body);
@@ -111,7 +111,7 @@ public class PortalPageService extends BaseCompService {
 		}
 		return mv;
 	}
-	
+
 	//解析布局器
 	public void parserBody(JSONObject body, MVContext mv, Object param, boolean release) throws Exception{
 		for(int i=1; true; i++){
@@ -124,13 +124,13 @@ public class PortalPageService extends BaseCompService {
 				JSONObject td = trs.getJSONObject(j);
 
 				Object cldTmp = td.get("children");
-				
+
 				if(cldTmp != null){
 					JSONArray children = (JSONArray)cldTmp;
 					for(int k=0; k<children.size(); k++){
 						JSONObject comp = children.getJSONObject(k);
 						String tp = comp.getString("type");
-						
+
 						if(tp.equals("text")){
 							//text 组件不用后端处理
 							//this.createText(mv, comp);
@@ -157,7 +157,7 @@ public class PortalPageService extends BaseCompService {
 			mv.setScripts(s);
 		}
 	}
-	
+
 	/**
 	 * 生成动态参数
 	 * @param param
@@ -167,7 +167,7 @@ public class PortalPageService extends BaseCompService {
 	 * @throws IOException
 	 */
 	public void parserParam(JSONObject param, DivContext div, MVContext mv, boolean isput) throws ExtConfigException, IOException {
-	
+
 			String type = param.getString("type");
 			String id = param.getString("paramid");
 			String desc = param.getString("name");
@@ -176,7 +176,7 @@ public class PortalPageService extends BaseCompService {
 			String dtformat = (String)param.get("dtformat");
 			String hiddenprm = (String)param.get("hiddenprm");
 			//String refds = (String)param.get("dsource");
-			
+
 			InputField input = null;
 			if("y".equals(hiddenprm)){
 				TextFieldContext txt = new TextFieldContextImpl();
@@ -233,6 +233,8 @@ public class PortalPageService extends BaseCompService {
 						target.setDateType("month");
 					}else if("yearselect".equals(type)){
 						target.setDateType("year");
+					}else if("yyyyMMddHHmmss".equals(dtformat) || "yyyy-MM-dd HH:mm:ss".equals(dtformat)){  //日期带时间类型
+						target.setDateType("datetime");
 					}
 					input = target;
 				}else if("text".equals(type)){
@@ -253,20 +255,21 @@ public class PortalPageService extends BaseCompService {
 			}
 			if(def != null && def.length() > 0){
 				if(("dateselect".equals(type) || "monthselect".equals(type) || "yearselect".equals(type) )&& "now".equals(def)){
-					def = new SimpleDateFormat(dtformat).format(new Date());
+					//解析 now, now - 1, now + 1 等形式
+					def = this.parserDefDate(type, dtformat, def);
 				}
 				input.setDefaultValue(def);
 			}
 			input.setOutBox(true);
 			div.getChildren().add(input);
 			input.setParent(div);
-			
+
 			//把参数放入对象
 			if(isput){
 				this.mvParams.put(input.getId(), input);
 				mv.setMvParam(input.getId(), input);
 			}
-						
+
 			//处理样式
 			JSONObject style = (JSONObject)param.get("style");
 			if(style != null && !style.isEmpty()){
@@ -291,7 +294,7 @@ public class PortalPageService extends BaseCompService {
 				if(tfontcolor != null && tfontcolor.length() > 0){
 					sb.append("color:" + tfontcolor+";");
 				}
-				
+
 				String italic = (String)style.get("titalic");
 				String underscore = (String)style.get("tunderscore");
 				String lineheight = (String)style.get("tlineheight");
@@ -310,9 +313,9 @@ public class PortalPageService extends BaseCompService {
 				}
 				div.setStyle(sb.toString());
 			}
-		
+
 	}
-	
+
 	private void paramOptions(JSONObject param, OptionsLoader option){
 		List ls = option.loadOptions();
 		if(ls == null){
@@ -331,7 +334,7 @@ public class PortalPageService extends BaseCompService {
 			}
 		}
 	}
-	
+
 	public String createDimSql(JSONObject dim){
 		JSONObject opt = dim.getJSONObject("option");
 		//查询事实表
@@ -348,12 +351,12 @@ public class PortalPageService extends BaseCompService {
 		 //直接从数据中查询。
 		return sql;
 	}
-	
+
 	public String createMonthSql(){
 		String sql = "select mid \"value\", mname \"text\" from code_month order by mid desc";
 		return sql;
 	}
-	
+
 	public void createBox(MVContext mv, Element td, BoxQuery compJson) throws IOException{
 		String dsetId = compJson.getDsetId();
 		String dsid = compJson.getDsid();
@@ -390,8 +393,8 @@ public class PortalPageService extends BaseCompService {
 				p.setValue(null);
 			}
 		}
-		
-		
+
+
 		String sql = chartService.createSql(chart, 1);
 		GridDataCenterContext dc = chartService.getChartService().createDataCenter(chart.getChartJson(), sql);
 		cr.setRefDataCenter(dc.getId());
@@ -399,7 +402,7 @@ public class PortalPageService extends BaseCompService {
 			mv.setGridDataCenters(new HashMap<String, GridDataCenterContext>());
 		}
 		mv.getGridDataCenters().put(dc.getId(), dc);
-		
+
 		tabTd.getChildren().add(cr);
 		cr.setParent(tabTd);
 		if(mv.getCharts() == null){
@@ -407,7 +410,7 @@ public class PortalPageService extends BaseCompService {
 			mv.setCharts(crs);
 		}
 		mv.getCharts().put(cr.getId(), cr);
-		
+
 		//判断是否有事件，是否需要添加参数
 		LinkAcceptDto linkAccept = chart.getChartJson().getLinkAccept();
 		if(linkAccept != null){
@@ -442,41 +445,41 @@ public class PortalPageService extends BaseCompService {
 			this.dsids.add(chart.getDsid());
 		}
 	}
-	
+
 	public void crtGrid(MVContext mv, Element tabTd, GridQuery grid, boolean release) throws IOException{
 		List<GridColDto> cols = grid.getCols();
 		if(cols == null || cols.size() == 0){
 			return;
 		}
-		
+
 		if(!this.dsids.contains(grid.getDsid())){
 			this.dsids.add(grid.getDsid());
 		}
-		
+
 		//创建corssReport
 		GridReportContext cr = gridSerivce.json2Grid(grid);
 		//设置ID
 		cr.setId(grid.getId());
 		cr.setRefDsource(grid.getDsid());
-		
+
 		//创建数据sql
 		String sql = gridSerivce.createSql(grid);
 		String name = TemplateManager.getInstance().createTemplate(sql);
 		cr.setTemplateName(name);
-		
+
 		tabTd.getChildren().add(cr);
 		cr.setParent(tabTd);
-		
+
 		if(mv.getGridReports() == null){
 			Map<String, GridReportContext> crs = new HashMap<String, GridReportContext>();
 			mv.setGridReports(crs);
 		}
 		Map<String, GridReportContext> crs = mv.getGridReports();
 		crs.put(cr.getId(), cr);
-		
+
 		mv.setGridReports(crs);
 	}
-	
+
 	public void crtTable(MVContext mv, Element tabTd, PortalTableQuery table, boolean release) throws Exception {
 		if(table.getCols() == null && table.getRows() == null) {
 			return;
@@ -514,14 +517,14 @@ public class PortalPageService extends BaseCompService {
 			cr = tableService.getTableService().json2Table(dto);
 			cols.remove(cols.size() - 1);
 		}
-	
+
 		cr.setId(table.getId());
 		cr.setOut("lockUI");
 		cr.setShowData(true);
 		if(mybaseKpi != null){
 			cr.setBaseKpi(mybaseKpi);
 		}
-		
+
 		String sql = tableService.createSql(table, 1, 0);
 		GridDataCenterContext dc = tableService.createDataCenter(sql, table);
 		cr.setRefDataCetner(dc.getId());
@@ -540,10 +543,10 @@ public class PortalPageService extends BaseCompService {
 			drillDim.setRefDataCenter(drillDc.getId());
 			mv.getGridDataCenters().put(drillDc.getId(), drillDc);
 		}
-		
+
 		tabTd.getChildren().add(cr);
 		cr.setParent(tabTd);
-		
+
 		//判断是否有事件，是否需要添加参数
 		LinkAcceptDto linkAccept = table.getLinkAccept();
 		if(linkAccept != null){
@@ -571,7 +574,7 @@ public class PortalPageService extends BaseCompService {
 					mv.setShowForm(true);
 				}
 			}
-			
+
 		}
 		if(mv.getCrossReports() == null){
 			Map crs = new HashMap();
