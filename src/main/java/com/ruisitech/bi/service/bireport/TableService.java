@@ -704,11 +704,11 @@ public class TableService extends BaseCompService {
 
 						//当回调函数和指标预警同时起作用时， 指标预警起作用
 						//处理回调函数
-						cf.setJsFunc(kpi.getFuncname());
 						String code = kpi.getCode();
 						if(code != null && code.length() > 0){
 							code = RSBIUtils.unescape(code);
 							this.scripts.append("function "+cf.getJsFunc()+"(value,col,row,data){"+code+"}");
+							cf.setJsFunc(kpi.getFuncname());
 						}
 
 						//处理指标预警
@@ -753,11 +753,11 @@ public class TableService extends BaseCompService {
 							}
 							//当回调函数和指标预警同时起作用时， 指标预警起作用
 							//处理回调函数
-							cf.setJsFunc(kpi.getFuncname());
 							String code = kpi.getCode();
 							if(code != null && code.length() > 0){
 								code = RSBIUtils.unescape(code);
 								this.scripts.append("function "+cf.getJsFunc()+"(value,col,row,data){"+code+"}");
+								cf.setJsFunc(kpi.getFuncname());
 							}
 							//处理指标预警
 							Map<String, Object> warn = kpi.getWarning();
