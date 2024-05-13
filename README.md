@@ -4,6 +4,8 @@
 
 “睿思BI”商业智能系统是由[成都睿思商智科技有限公司](https://www.ruisitech.com)自主研发的企业数据分析系统。 开源版包含数据建模、数据报表、多维分析，权限管理等功能模块，方便用户快速建立一套易用，灵活、免费的数据平台，实现数据的快速分析及可视化。 <br>
 
+ 快速开始：https://blog.csdn.net/zhuifengsn/article/details/138605460 <br>
+
 # 产品数据库配置：<br>
 sqlite:
 ```yaml
@@ -56,7 +58,6 @@ mysql的备份文件在datas目录下，在mysql创建 rs_report数据库后，�
 
 文档地址： http://www.ruisibi.cn/book.htm <br/>
 演示地址： http://bi.ruisitech.com/  <br/>
-快速开始： https://blog.csdn.net/zhuifengsn/article/details/79822585 <br/>
 <p/>
 
 # 产品截图：<br/>
