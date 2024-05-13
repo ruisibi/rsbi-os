@@ -53,6 +53,9 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/control/extControl", "anon");
         filterChainDefinitionMap.put("/portal/share/**", "shareAuthc");  //报表分享后的URL不用登录
         filterChainDefinitionMap.put("/control/extShare", "shareAuthc");
+        filterChainDefinitionMap.put("/static/**", "anon");  //资源文件(vue)
+        filterChainDefinitionMap.put("/index.html", "anon");  //资源文件(vue)
+        filterChainDefinitionMap.put("/rs_favicon.ico", "anon");  //资源文件(vue)
         filterChainDefinitionMap.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
