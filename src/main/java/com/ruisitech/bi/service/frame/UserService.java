@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-	
+
 	@Autowired
 	private UserMapper mapper;
 
@@ -46,33 +46,33 @@ public class UserService {
 	public User getUserByUserId(Integer userId){
 		return mapper.getUserById(userId);
 	}
-	
+
 	public void updateLogDateAndCnt(Integer userId){
 		mapper.updateLogDateAndCnt(userId, RSBIUtils.getConstant("dbName"));
 	}
-	
+
 	public void modPsd(User u){
 		mapper.modPsd(u);
 	}
-	
+
 	public String checkPsd(Integer userId){
 		return mapper.checkPsd(userId);
 	}
-	
+
 	public Map<String, Object> appUserinfo(Integer userId){
 		return mapper.appUserinfo(userId);
 	}
-	
+
 	public String shiroLogin(String userName, String password){
-		UsernamePasswordToken token = new UsernamePasswordToken(userName, password, null);   
+		UsernamePasswordToken token = new UsernamePasswordToken(userName, password, null);
 	    token.setRememberMe(true);
-	    // shiro登陆验证  
-	    try {  
-	        SecurityUtils.getSubject().login(token);  
-	    } catch (UnknownAccountException ex) {  
-	        return "账号不存在或者密码错误！";  
-	    } catch (IncorrectCredentialsException ex) {  
-	        return "账号不存在或者密码错误！";  
+	    // shiro登陆验证
+	    try {
+	        SecurityUtils.getSubject().login(token);
+	    } catch (UnknownAccountException ex) {
+	        return "message.login.userError";
+	    } catch (IncorrectCredentialsException ex) {
+	        return "message.login.userError！";
 	    } catch (AuthenticationException ex) {
 	    	String ret = null;
 	    	Throwable t = ex;
@@ -83,10 +83,10 @@ public class UserService {
 	    			break;
 	    		}
 	    	}
-	    	return "系统错误：" + ret;
-	    } catch (Exception ex) {  
-	        ex.printStackTrace();  
-	        return "内部错误，请重试！";  
+	    	return  ret;
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	        return ex.getMessage();
 	    }
 	    return "SUC";
 	}
