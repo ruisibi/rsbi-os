@@ -20,7 +20,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping(value = "/frame")
 public class UserController extends BaseController {
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -57,7 +57,7 @@ public class UserController extends BaseController {
 		userService.deleteUser(userId);
 		return super.buildSucces();
 	}
-	
+
 	@RequestMapping(value="/chgPsd.action", method = RequestMethod.POST)
 	public @ResponseBody
     Object chgPsd(String password1, String password2, String password3){
@@ -65,7 +65,7 @@ public class UserController extends BaseController {
 		String userPassword = userService.checkPsd(userId);
 		if(!userPassword.equals(RSBIUtils.getEncodedStr(password1)))
 		{
-			return this.buildError("原始密码错误");
+			return this.buildError("message.main.psd.error");
 		}
 		else
 		{

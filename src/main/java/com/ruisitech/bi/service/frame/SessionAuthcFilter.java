@@ -27,9 +27,9 @@ public class SessionAuthcFilter extends AdviceFilter {
 	@Override
 	protected boolean preHandle(ServletRequest request, ServletResponse response)
 			throws Exception {
-		Subject us = SecurityUtils.getSubject(); 
+		Subject us = SecurityUtils.getSubject();
 		Session session = us.getSession();
-		
+
 		if(!us.isAuthenticated() && us.isRemembered() && session.getAttribute(ShiroDbRealm.SESSION_USER_KEY) == null){
 			//说明是记住我过来的,恢复SESSION里的值
 			Object staffId = us.getPrincipal();
@@ -39,7 +39,7 @@ public class SessionAuthcFilter extends AdviceFilter {
 			}else{
 				response.setContentType("application/json; charset=utf-8");
 				response.setCharacterEncoding("utf-8");
-				Result r = new Result(RequestStatus.NOLOGIN.getStatus(), "登录信息已经超时，请重新登录！", null);
+				Result r = new Result(RequestStatus.NOLOGIN.getStatus(), "message.base.noLoginInfo", null);
 				response.getWriter().print(JSONObject.toJSONString(r));
 				return false;
 			}
@@ -49,7 +49,7 @@ public class SessionAuthcFilter extends AdviceFilter {
 		}else{
 			response.setContentType("application/json; charset=utf-8");
 			response.setCharacterEncoding("utf-8");
-			Result r = new Result(RequestStatus.NOLOGIN.getStatus(), "登录信息已经超时，请重新登录！", null);
+			Result r = new Result(RequestStatus.NOLOGIN.getStatus(), "message.base.noLoginInfo", null);
 			response.getWriter().print(JSONObject.toJSONString(r));
 			return false;
 		}
