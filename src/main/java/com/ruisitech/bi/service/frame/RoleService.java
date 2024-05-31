@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 本系统版权归成都睿思商智科技有限公司所有 
+ * Copyright 2018 本系统版权归成都睿思商智科技有限公司所有
  * 用户不能删除系统源码上的版权信息, 使用许可证地址:
  * https://www.ruisitech.com/licenses/index.html
  */
@@ -30,10 +30,10 @@ import java.util.Map;
  */
 @Service
 public class RoleService {
-	
+
 	@Autowired
 	private RoleMapper mapper;
-	
+
 	@Autowired
 	private DaoHelper daoHelper;
 
@@ -51,7 +51,7 @@ public class RoleService {
 					state.put("selected", true);
 					m.put("state", state);
 				}
-				
+
 			}
 
 			@Override
@@ -63,16 +63,16 @@ public class RoleService {
 					m.put("icon", "fa fa-file-o");
 				}
 			}
-			
+
 		});
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("id", "root");
-		m.put("text", "系统菜单树");
+		m.put("text", "message.manage.menu.root");
 		m.put("icon", "fa fa-home");
 		m.put("children", ret);
 		return m;
 	}
-	
+
 	public List<Map<String, Object>> roledata(Integer roleId){
 		List<Map<String, Object>> datas = mapper.roledata(roleId);
 		TreeService tree = new TreeService();
@@ -94,15 +94,15 @@ public class RoleService {
 				attr.put("tp", tp);
 				m.put("li_attr", attr);
 			}
-			
+
 		});
 		return ret;
 	}
-	
+
 	public List<Role> list(String keyword){
 		return mapper.list(keyword);
 	}
-	
+
 	/**
 	 * 查询所有角色及用户所有的角色
 	 * @param userId
@@ -111,7 +111,7 @@ public class RoleService {
 	public List<Role> listUserRole(Integer userId){
 		return mapper.listUserRole(userId);
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public void addUserRole(List<Integer> roleIds, Integer userId) {
 		//删除角色
@@ -138,7 +138,7 @@ public class RoleService {
 			}
 		});
 	}
-	
+
 	public void updateRole(Role role) {
 		String sql = "update sc_role set role_name = ?,role_desc = ?, ord=? where role_id = ?";
 		daoHelper.execute(sql, new PreparedStatementCallback<Object>(){
@@ -152,7 +152,7 @@ public class RoleService {
 			}
 		});
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteRole(Integer id) {
 		String sql = "delete from sc_role where role_id = " + id ;
@@ -162,17 +162,17 @@ public class RoleService {
 		//删除角色用户关系
 		daoHelper.execute("delete from role_user_rela where role_id = " + id);
 	}
-	
+
 	public Role getRole(Integer id) {
 		return mapper.getById(id);
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public void roleMenu(String menuIds, Integer roleId) {
 		//删除以前数据
 		String delSql = "delete from role_menu_rela where role_id = " + roleId;
 		daoHelper.execute(delSql);
-		
+
 		String[] ids = menuIds.split(",");//处理获取的菜单ID格式
 		String sql = "insert into role_menu_rela(role_id, menu_id) values(?,?)";
 		for(final String tmp : ids){//这个循环用于循环插入授权数据
@@ -188,7 +188,7 @@ public class RoleService {
 			}
 		}
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public void roleDataSave(Integer roleId, String dataIds) {
 		//删除以前数据
@@ -208,7 +208,7 @@ public class RoleService {
 					ps.setInt(2, Integer.parseInt(data));
 					ps.executeUpdate();
 					return null;
-				}				
+				}
 			});
 		}
 	}

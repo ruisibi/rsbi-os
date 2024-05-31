@@ -94,7 +94,7 @@ public class UserService {
 	public String saveUser(User u) {
 		int cnt = mapper.userExist(u.getStaffId());
 		if(cnt > 0){
-			return "账号已经存在。";
+			return "message.manage.user.exist";
 		}
 		u.setUserId(mapper.maxUserId());
 		u.setPassword(RSBIUtils.getMD5(u.getPassword().getBytes()));
@@ -172,7 +172,7 @@ public class UserService {
 		});
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("id", "root");
-		m.put("text", "系统菜单树");
+		m.put("text", "message.manage.menu.root");
 		m.put("icon", " fa fa-home");
 		Map<String, Object> state = new HashMap<String, Object>();
 		state.put("disabled", true);
