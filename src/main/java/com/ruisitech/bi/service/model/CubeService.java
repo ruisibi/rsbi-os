@@ -20,32 +20,32 @@ import java.util.Map;
 
 @Service
 public class CubeService {
-	
+
 	private Logger log = Logger.getLogger(CubeService.class);
-	
+
 	@Autowired
 	private CubeMapper mapper;
-	
+
 	@Autowired
 	private DimensionMapper dimMapper;
-	
+
 	@Autowired
 	private MeasureMapper kpiMapper;
-	
+
 	@Autowired
 	private CubeColMetaMapper metaMapper;
-	
+
 	@Autowired
 	private DatasetMapper dsetMapper;
 
 	public List<Cube> listCube(String keyword){
 		return mapper.listCube(keyword);
 	}
-	
+
 	public Integer getMaxCubeId(){
 		return mapper.getMaxCubeId();
 	}
-	
+
 	public JSONObject getCubeById(Integer cubeId){
 		Cube cube = mapper.getCubeById(cubeId);
 		JSONObject ret = (JSONObject) JSONObject.toJSON(cube);
@@ -60,7 +60,7 @@ public class CubeService {
 		ret.put("kpis", mapper.getCubeKpis(cubeId));
 		return ret;
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public Result insertCube(Cube cube){
 		Result ret = new Result();
@@ -68,7 +68,7 @@ public class CubeService {
 			Integer cubeId = mapper.getMaxCubeId();
 			cube.setCubeId(cubeId);
 			mapper.insertCube(cube);
-		
+
 			this.insertDim(cube);
 			this.insertDimRela(cube);
 			this.insertKpi(cube);
@@ -81,7 +81,7 @@ public class CubeService {
 		}
 		return ret;
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public Result deleteCube(Integer cubeId){
 		Result ret = new Result();
@@ -105,9 +105,9 @@ public class CubeService {
 			ret.setMsg(ex.getMessage());
 			log.error("立方体保存出错。", ex);
 		}
-		return ret; 
+		return ret;
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	public Result updateCube(Cube cube){
 		Result ret = new Result();
@@ -122,7 +122,7 @@ public class CubeService {
 				if(id == null || id.toString().length() == 0){
 					continue;
 				}
-				
+
 				if("dim".equals(tp)){
 					Dimension dim = new Dimension();
 					dim.setCubeId(cube.getCubeId());
@@ -137,7 +137,7 @@ public class CubeService {
 					dimMapper.deleteGroupById((String)id);
 				}
 			}
-			
+
 			//删除关系表数据，再从建
 			//处理维度
 			this.updateDim(cube);
@@ -153,7 +153,7 @@ public class CubeService {
 		}
 		return ret;
 	}
-	
+
 	private void updateDim(Cube cube){
 		List<String> groupkeys = dimMapper.listGroup(cube.getCubeId());
 		List<Dimension> dims = cube.getDims();
@@ -184,7 +184,7 @@ public class CubeService {
 			dim.setDimId(targetId);
 		}
 	}
-	
+
 	private void updateKpi(Cube cube){
 		List<Measure> kpis = cube.getKpis();
 		for(int i=0; i<kpis.size(); i++){
@@ -203,7 +203,7 @@ public class CubeService {
 			kpi.setKpiId(targetId);
 		}
 	}
-	
+
 	private void insertDim(Cube cube){
 		List<String> groupkeys = new ArrayList<String>();
 		List<Dimension> dims = cube.getDims();
@@ -222,18 +222,18 @@ public class CubeService {
 			}else{
 				dimId++;
 			}
-		
+
 			//判断是否有分组，如果有分组插入分组
 			String groupId = dim.getGroupId();
 			if(groupId != null && groupId.length() > 0 && !groupkeys.contains(groupId)){
 				dimMapper.insertGroup(dim);
 				groupkeys.add(groupId);
 			}
-			
+
 			dim.setDimId(dimId);
 		}
 	}
-	
+
 	private void insertDimRela(Cube cube){
 		metaMapper.deleteDimMeta(cube.getCubeId());
 		List<Dimension> dims = cube.getDims();
@@ -245,7 +245,7 @@ public class CubeService {
 			metaMapper.insertMeta(dim);
 		}
 	}
-	
+
 	private void insertKpi(Cube cube){
 		int kpiId = 0;
 		List<Measure> kpis = cube.getKpis();
@@ -261,7 +261,7 @@ public class CubeService {
 			kpi.setKpiId(kpiId);
 		}
 	}
-	
+
 	private void insertKpiRela(Cube cube){
 		//先删除指标数据
 		metaMapper.deleteKpiMeta(cube.getCubeId());
@@ -282,7 +282,7 @@ public class CubeService {
 			metaMapper.insertMeta(kpi);
 		}
 	}
-	
+
 	public List<Map<String, Object>> treeCube(Integer cubeId){
 		Map<String, Object> curGroup = null; //当前分组对象.
 		//默认所有节点都打开
@@ -298,7 +298,7 @@ public class CubeService {
 			m.put("children", cubeChild);
 			Map<String, Object> wdnode = new HashMap<String, Object>();
 			wdnode.put("id", "wd");
-			wdnode.put("text", "维度");
+			wdnode.put("text", "message.model.cube.dim");
 			wdnode.put("state", state);
 			wdnode.put("icon", "fa fa-gears");
 			List<Map<String, Object>> wdnodeChild = new ArrayList<Map<String, Object>>();
@@ -306,15 +306,15 @@ public class CubeService {
 			cubeChild.add(wdnode);
 			Map<String, Object> zbnode = new HashMap<String, Object>();
 			zbnode.put("id", "zb");
-			zbnode.put("text", "度量");
+			zbnode.put("text", "message.model.cube.kpi");
 			zbnode.put("state", state);
 			zbnode.put("icon", "glyphicon glyphicon-signal");
 			List<Map<String, Object>> zbnodeChild = new ArrayList<Map<String, Object>>();
 			zbnode.put("children", zbnodeChild);
 			cubeChild.add(zbnode);
-			
+
 			List<Map<String, Object>> children = mapper.listCubeMeta(cubeId);
-			
+
 			//设置attributes;
 			for(int j=0; j<children.size(); j++){
 				Map<String, Object> child = (Map<String, Object>)children.get(j);

@@ -31,25 +31,25 @@ import java.util.Map;
 @Service
 @Scope("prototype")
 public class BoxService extends BaseCompService {
-	
+
 	public final static String deftMvId = "mv.portal.box";
-	
+
 	private Map<String, InputField> mvParams = new HashMap<String, InputField>(); //mv的参数
 
 	@Autowired
 	private DataControlInterface dataControl; //数据权限控制
-	
+
 	@Autowired
 	private ModelCacheService cacheService;
-	
+
 	public @PostConstruct void init() {
-		
-	}  
-	
+
+	}
+
 	public @PreDestroy void destory() {
 		mvParams.clear();
 	}
-	
+
 	public MVContext json2MV(BoxQuery box) throws Exception{
 		//创建MV
 		MVContext mv = new MVContextImpl();
@@ -57,21 +57,21 @@ public class BoxService extends BaseCompService {
 		String formId = ExtConstants.formIdPrefix + IdCreater.create();
 		mv.setFormId(formId);
 		mv.setMvid(deftMvId);
-		
+
 		//处理参数,把参数设为hidden
-		super.parserHiddenParam(box.getPortalParams(), mv, mvParams);	
-		
+		super.parserHiddenParam(box.getPortalParams(), mv, mvParams);
+
 		this.json2Box(box, mv);
-		
+
 		super.createDsource(this.cacheService.getDsource(box.getDsid()), mv);
-		
+
 		return mv;
 	}
-	
+
 	/**
 	 * 通过数据生成 box 块
 	 * @param mv
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void json2Box(BoxQuery box, Element mv) throws IOException{
 		if(box.getKpiJson()== null){
@@ -106,7 +106,7 @@ public class BoxService extends BaseCompService {
 			unit = "";
 		}
 		unit = s + unit;
-		String str = " {\"trueValue\":"+"$!k"+p1+", ";
+		String str = " {\"trueValue\":#if($!k"+p1+") "+"$!k"+p1+" #else null #end,";
 		str += "value:\"$extUtils.numberFmt($!k"+p1+", '"+(fmt==null?"":fmt)+"')"+unit+"\", ";
 		str += "alias:\""+alias+"\", ";
 		if(kpi.getTfontsize() != null){
@@ -122,7 +122,7 @@ public class BoxService extends BaseCompService {
 		mv.getChildren().add(text);
 		text.setParent(mv);
 	}
-	
+
 	public String createSql(BoxQuery box){
 		JSONObject dset = this.cacheService.getDset(box.getDsetId());
 		Map<String, String> tableAlias = createTableAlias(dset);
@@ -141,11 +141,11 @@ public class BoxService extends BaseCompService {
 		}
 		sql.append(" as ");
 		sql.append(kpi.getAlias());
-		
+
 		JSONArray joinTabs = (JSONArray)dset.get("joininfo");
 		String master = dset.getString("master");
 		sql.append(" from " + master + " a0");
-		
+
 		for(int i=0; joinTabs!=null&&i<joinTabs.size(); i++){  //通过主表关联
 			JSONObject tab = joinTabs.getJSONObject(i);
 			String ref = tab.getString("ref");
@@ -159,7 +159,7 @@ public class BoxService extends BaseCompService {
 			sql.append(" ");
 		}
 		sql.append(" where 1=1 ");
-		
+
 		if(dataControl != null){
 			String ret = dataControl.process(RSBIUtils.getLoginUserInfo(), (String)dset.get("master"));
 			if(ret != null){
