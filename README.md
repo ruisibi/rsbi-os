@@ -1,4 +1,8 @@
 # 睿思BI开源版-后端系统
+
+- zh_CN [简体中文](README.md)
+- en [English](README_en.md)
+
 睿思BI开源版后端系统，基于Springboot构建，采用sqlite数据库，直接运行com.ruisitech.bi.RsbiOsApplication启动系统。<br/>
 ⚠️ 此项目前端地址：https://github.com/ruisibi/rsbi-vue ⚠️<br/>
 
